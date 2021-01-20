@@ -58,7 +58,7 @@ class User
     /**
      * @ORM\ManyToOne(targetEntity=FitnessRoom::class, inversedBy="users")
      */
-    private $fitnessRoom_id;
+    private $fitnessRoom;
 
     /**
      * @ORM\OneToMany(targetEntity=Goal::class, mappedBy="user_id", orphanRemoval=true)
@@ -269,6 +269,18 @@ class User
                 $comment->setUserId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFitnessRoom(): ?FitnessRoom
+    {
+        return $this->fitnessRoom;
+    }
+
+    public function setFitnessRoom(?FitnessRoom $fitnessRoom): self
+    {
+        $this->fitnessRoom = $fitnessRoom;
 
         return $this;
     }

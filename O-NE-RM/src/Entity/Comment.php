@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\CommentRepository;
+use App\Entity\Exercise;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CommentRepository;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
@@ -26,13 +27,13 @@ class Comment
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user_id;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Exercise::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $exercise_id;
+    private $exercise;
 
     public function getId(): ?int
     {
@@ -51,26 +52,26 @@ class Comment
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUser(?User $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getExerciseId(): ?Exercise
+    public function getExercise(): ?Exercise
     {
-        return $this->exercise_id;
+        return $this->exercise;
     }
 
-    public function setExerciseId(?Exercise $exercise_id): self
+    public function setExercise(?Exercise $exercise): self
     {
-        $this->exercise_id = $exercise_id;
+        $this->exercise = $exercise;
 
         return $this;
     }

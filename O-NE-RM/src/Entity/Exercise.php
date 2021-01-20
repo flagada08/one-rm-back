@@ -126,7 +126,7 @@ class Exercise
     {
         if (!$this->goals->contains($goal)) {
             $this->goals[] = $goal;
-            $goal->setExerciseId($this);
+            $goal->setExercise($this);
         }
 
         return $this;
@@ -136,8 +136,8 @@ class Exercise
     {
         if ($this->goals->removeElement($goal)) {
             // set the owning side to null (unless already changed)
-            if ($goal->getExerciseId() === $this) {
-                $goal->setExerciseId(null);
+            if ($goal->getExercise() === $this) {
+                $goal->setExercise(null);
             }
         }
 
@@ -156,7 +156,7 @@ class Exercise
     {
         if (!$this->progress->contains($progress)) {
             $this->progress[] = $progress;
-            $progress->setExerciseId($this);
+            $progress->setExercise($this);
         }
 
         return $this;
@@ -166,8 +166,8 @@ class Exercise
     {
         if ($this->progress->removeElement($progress)) {
             // set the owning side to null (unless already changed)
-            if ($progress->getExerciseId() === $this) {
-                $progress->setExerciseId(null);
+            if ($progress->getExercise() === $this) {
+                $progress->setExercise(null);
             }
         }
 
@@ -186,7 +186,7 @@ class Exercise
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
-            $comment->setExerciseId($this);
+            $comment->setExercise($this);
         }
 
         return $this;
@@ -196,8 +196,8 @@ class Exercise
     {
         if ($this->comments->removeElement($comment)) {
             // set the owning side to null (unless already changed)
-            if ($comment->getExerciseId() === $this) {
-                $comment->setExerciseId(null);
+            if ($comment->getExercise() === $this) {
+                $comment->setExercise(null);
             }
         }
 

@@ -80,7 +80,7 @@ class FitnessRoom
     {
         if (!$this->users->contains($user)) {
             $this->users[] = $user;
-            $user->setFitnessRoomId($this);
+            $user->setFitnessRoom($this);
         }
 
         return $this;
@@ -90,8 +90,8 @@ class FitnessRoom
     {
         if ($this->users->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($user->getFitnessRoomId() === $this) {
-                $user->setFitnessRoomId(null);
+            if ($user->getFitnessRoom() === $this) {
+                $user->setFitnessRoom(null);
             }
         }
 

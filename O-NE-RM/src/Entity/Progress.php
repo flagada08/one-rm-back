@@ -36,13 +36,13 @@ class Progress
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="progress")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user_id;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Exercise::class, inversedBy="progress")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $Exercise_id;
+    private $exercise;
 
     public function getId(): ?int
     {
@@ -85,26 +85,26 @@ class Progress
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUser(?User $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getExerciseId(): ?Exercise
+    public function getExercise(): ?Exercise
     {
-        return $this->Exercise_id;
+        return $this->exercise;
     }
 
-    public function setExerciseId(?Exercise $Exercise_id): self
+    public function setExercise(?Exercise $exercise): self
     {
-        $this->Exercise_id = $Exercise_id;
+        $this->exercise = $exercise;
 
         return $this;
     }
