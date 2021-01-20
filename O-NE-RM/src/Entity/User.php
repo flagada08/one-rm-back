@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -52,6 +54,33 @@ class User
      * @ORM\Column(type="string", length=60, nullable=true)
      */
     private $role;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=FitnessRoom::class, inversedBy="users")
+     */
+    private $fitnessRoom_id;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Goal::class, mappedBy="user_id", orphanRemoval=true)
+     */
+    private $goals;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Progress::class, mappedBy="user_id", orphanRemoval=true)
+     */
+    private $progress;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="user_id", orphanRemoval=true)
+     */
+    private $comments;
+
+    public function __construct()
+    {
+        $this->goals = new ArrayCollection();
+        $this->progress = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -138,6 +167,108 @@ class User
     public function setRole(?string $role): self
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    public function getFitnessRoomId(): ?FitnessRoom
+    {
+        return $this->fitnessRoom_id;
+    }
+
+    public function setFitnessRoomId(?FitnessRoom $fitnessRoom_id): self
+    {
+        $this->fitnessRoom_id = $fitnessRoom_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Goal[]
+     */
+    public function getGoals(): Collection
+    {
+        return $this->goals;
+    }
+
+    public function addGoal(Goal $goal): self
+    {
+        if (!$this->goals->contains($goal)) {
+            $this->goals[] = $goal;
+            $goal->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGoal(Goal $goal): self
+    {
+        if ($this->goals->removeElement($goal)) {
+            // set the owning side to null (unless already changed)
+            if ($goal->getUserId() === $this) {
+                $goal->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Progress[]
+     */
+    public function getProgress(): Collection
+    {
+        return $this->progress;
+    }
+
+    public function addProgress(Progress $progress): self
+    {
+        if (!$this->progress->contains($progress)) {
+            $this->progress[] = $progress;
+            $progress->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProgress(Progress $progress): self
+    {
+        if ($this->progress->removeElement($progress)) {
+            // set the owning side to null (unless already changed)
+            if ($progress->getUserId() === $this) {
+                $progress->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUserId() === $this) {
+                $comment->setUserId(null);
+            }
+        }
 
         return $this;
     }

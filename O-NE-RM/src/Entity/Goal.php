@@ -27,6 +27,18 @@ class Goal
      */
     private $weight;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="goals")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Exercise::class, inversedBy="goals")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $exercise_id;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -52,6 +64,30 @@ class Goal
     public function setWeight(?int $weight): self
     {
         $this->weight = $weight;
+
+        return $this;
+    }
+
+    public function getUserId(): ?User
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?User $user_id): self
+    {
+        $this->user_id = $user_id;
+
+        return $this;
+    }
+
+    public function getExerciseId(): ?Exercise
+    {
+        return $this->exercise_id;
+    }
+
+    public function setExerciseId(?Exercise $exercise_id): self
+    {
+        $this->exercise_id = $exercise_id;
 
         return $this;
     }

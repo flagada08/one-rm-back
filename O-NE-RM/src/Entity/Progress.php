@@ -32,6 +32,18 @@ class Progress
      */
     private $weight;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="progress")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Exercise::class, inversedBy="progress")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $Exercise_id;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +81,30 @@ class Progress
     public function setWeight(?int $weight): self
     {
         $this->weight = $weight;
+
+        return $this;
+    }
+
+    public function getUserId(): ?User
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?User $user_id): self
+    {
+        $this->user_id = $user_id;
+
+        return $this;
+    }
+
+    public function getExerciseId(): ?Exercise
+    {
+        return $this->Exercise_id;
+    }
+
+    public function setExerciseId(?Exercise $Exercise_id): self
+    {
+        $this->Exercise_id = $Exercise_id;
 
         return $this;
     }
