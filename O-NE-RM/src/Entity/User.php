@@ -61,17 +61,17 @@ class User
     private $fitnessRoom;
 
     /**
-     * @ORM\OneToMany(targetEntity=Goal::class, mappedBy="user_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Goal::class, mappedBy="user", orphanRemoval=true)
      */
     private $goals;
 
     /**
-     * @ORM\OneToMany(targetEntity=Progress::class, mappedBy="user_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Progress::class, mappedBy="user", orphanRemoval=true)
      */
     private $progress;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="user_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="user", orphanRemoval=true)
      */
     private $comments;
 
@@ -171,12 +171,12 @@ class User
         return $this;
     }
 
-    public function getFitnessRoomId(): ?FitnessRoom
+    public function getFitnessRoom(): ?FitnessRoom
     {
-        return $this->fitnessRoom_id;
+        return $this->fitnessRoom;
     }
 
-    public function setFitnessRoomId(?FitnessRoom $fitnessRoom_id): self
+    public function setFitnessRoom(?FitnessRoom $fitnessRoom_id): self
     {
         $this->fitnessRoom_id = $fitnessRoom_id;
 
@@ -195,7 +195,7 @@ class User
     {
         if (!$this->goals->contains($goal)) {
             $this->goals[] = $goal;
-            $goal->setUserId($this);
+            $goal->setUser($this);
         }
 
         return $this;
@@ -205,8 +205,8 @@ class User
     {
         if ($this->goals->removeElement($goal)) {
             // set the owning side to null (unless already changed)
-            if ($goal->getUserId() === $this) {
-                $goal->setUserId(null);
+            if ($goal->getUser() === $this) {
+                $goal->setUser(null);
             }
         }
 
@@ -225,7 +225,7 @@ class User
     {
         if (!$this->progress->contains($progress)) {
             $this->progress[] = $progress;
-            $progress->setUserId($this);
+            $progress->setUser($this);
         }
 
         return $this;
@@ -235,8 +235,8 @@ class User
     {
         if ($this->progress->removeElement($progress)) {
             // set the owning side to null (unless already changed)
-            if ($progress->getUserId() === $this) {
-                $progress->setUserId(null);
+            if ($progress->getUser() === $this) {
+                $progress->setUser(null);
             }
         }
 
@@ -255,7 +255,7 @@ class User
     {
         if (!$this->comments->contains($comment)) {
             $this->comments[] = $comment;
-            $comment->setUserId($this);
+            $comment->setUser($this);
         }
 
         return $this;
@@ -265,22 +265,10 @@ class User
     {
         if ($this->comments->removeElement($comment)) {
             // set the owning side to null (unless already changed)
-            if ($comment->getUserId() === $this) {
-                $comment->setUserId(null);
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getFitnessRoom(): ?FitnessRoom
-    {
-        return $this->fitnessRoom;
-    }
-
-    public function setFitnessRoom(?FitnessRoom $fitnessRoom): self
-    {
-        $this->fitnessRoom = $fitnessRoom;
 
         return $this;
     }

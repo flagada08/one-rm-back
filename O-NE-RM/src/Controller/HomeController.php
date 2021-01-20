@@ -2,17 +2,24 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Exercise;
+use App\Repository\ExerciseRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
     /**
      * @Route("/", name="home")
      */
-    public function Home(): Response
+    public function Home(ExerciseRepository $exercise): Response
     {
-        return $this->json('POLOOOLOLOOOOO ON EST TROP FORTS');
+
+        $list = $exercise->findAll();
+
+        
+
+        return $this->json($list);
     }
 }

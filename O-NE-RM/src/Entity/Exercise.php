@@ -40,17 +40,17 @@ class Exercise
     private $advice;
 
     /**
-     * @ORM\OneToMany(targetEntity=Goal::class, mappedBy="exercise_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Goal::class, mappedBy="exercise", orphanRemoval=true)
      */
     private $goals;
 
     /**
-     * @ORM\OneToMany(targetEntity=Progress::class, mappedBy="Exercise_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Progress::class, mappedBy="exercise", orphanRemoval=true)
      */
     private $progress;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="exercise_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="exercise", orphanRemoval=true)
      */
     private $comments;
 

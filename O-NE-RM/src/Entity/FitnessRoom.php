@@ -30,7 +30,7 @@ class FitnessRoom
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="fitnessRoom_id")
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="fitnessRoom")
      */
     private $users;
 
