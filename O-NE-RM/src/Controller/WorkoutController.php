@@ -13,8 +13,10 @@ class WorkoutController extends AbstractController
      */
     public function WorkoutList(): Response
     {
-        return $this->render('workout/index.html.twig', [
-            'controller_name' => 'WorkoutController',
-        ]);
+        //"TODO.."
+
+        // Etape 1 : recuperer les workout présents en BDD
+
+        // Etape 2 : retourner les données en JSON
     }
 }
