@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ExerciseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,26 +17,31 @@ class Exercise
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("workout_get")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=70)
+     * @Groups("workout_get")
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("workout_get")
      */
     private $difficulty;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups("workout_get")
      */
     private $illustration;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups("workout_get")
      */
     private $advice;
 
