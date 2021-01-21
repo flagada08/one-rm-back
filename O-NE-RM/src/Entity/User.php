@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -17,46 +18,62 @@ class User
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("test")
+     * 
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=10)
+     * @Groups("test")
+     * @Groups("infos")
      */
     private $gender;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Groups("test")
+     * @Groups("infos")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=80)
+     * @Groups("test")
+     * @Groups("infos")
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("test")
+     * @Groups("infos")
      */
     private $age;
 
     /**
      * @ORM\Column(type="string")
+     * @Groups("infos")
+     * 
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=60, nullable=true)
+     * @Groups("infos")
      */
     private $role;
 
     /**
      * @ORM\ManyToOne(targetEntity=FitnessRoom::class, inversedBy="users")
+     * @Groups("test")
+     * @Groups("infos")
      */
     private $fitnessRoom;
 
@@ -176,9 +193,9 @@ class User
         return $this->fitnessRoom;
     }
 
-    public function setFitnessRoom(?FitnessRoom $fitnessRoom_id): self
+    public function setFitnessRoom(?FitnessRoom $fitnessRoom): self
     {
-        $this->fitnessRoom_id = $fitnessRoom_id;
+        $this->fitnessRoom = $fitnessRoom;
 
         return $this;
     }
