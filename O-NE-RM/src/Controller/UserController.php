@@ -2,26 +2,29 @@
 
 namespace App\Controller;
 
-use App\Entity\FitnessRoom;
+use App\Entity\Exercise;
 use App\Entity\User;
-use App\Repository\FitnessRoomRepository;
+use App\Normalizer\EntityNormalizer;
+use App\Repository\ExerciseRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use ContainerKDoc2AZ\EntityManager_9a5be93;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class UserController extends AbstractController
 {
 
 
     /**
-     * @Route("/user/profil/{id}", name="profil")
+     * @Route("/user/{id}/profil", name="profil")
      */
     public function profil(User $user, UserRepository $userRepository): Response
     {
@@ -32,39 +35,70 @@ class UserController extends AbstractController
 
 
     /**
-     * @Route("/user/edit", name="user", methods={"PUT","PATCH"})
+     * @Route("/user/{id}/edit", name="user", methods={"PUT","PATCH"})
      */
-    public function edit(): Response
+    public function edit(User $user, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
-        return $this->render('user/index.html.twig');
+        $jsonContent = $request->getContent();
+
+        $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user] );
+
+        $error = $validator->validate($user);
+
+        if (count($error) > 0) {
+
+            return $this->json('erreur mon amis', Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        }
+
+        $em->flush();
+
+        return $this->json(['message' => 'User modifié.'], Response::HTTP_OK);
     }
 
-    /**
-     * @Route("/user/performances", name="performances")
-     */
-    public function performance(): Response
-    {
-        return $this->render('user/index.html.twig');
-    }
 
     /**
-     * @Route("/user/workout/{id}", name="workout")
+     * @Route("/user/{id}/workout", name="workout")
      */
-    public function workout(): Response
+    public function workout(User $exercise, ExerciseRepository $exerciseRepository): Response
     {
-        return $this->render('user/index.html.twig');
+
+        $currentExercise = $exerciseRepository->find($exercise);
+
+        return $this->json($currentExercise);
+
     }
+    // /**
+    //  * @Route("/user/{id}/workout", name="workout")
+    //  */
+    // public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository): Response
+    // {
+
+    //     $currentExercise = $exerciseRepository->find($exercise);
+
+    //     return $this->json($currentExercise);
+
+    // }
 
     /**
-     * @Route("/user/workout/{id}/newPerf", name="newPerformance", methods={"POST"})
+     * @Route("/user/{id}/performances", name="performances")
+     */
+    public function performance(User $user): Response
+    {
+        //TODO
+    }
+
+
+    /**
+     * @Route("/user/{id}/workout/newPerf", name="newPerformance", methods={"POST"})
      */
     public function newPerf(): Response
     {
-        return $this->render('user/index.html.twig');
+        //TODO
     }
 
      /**
-     * @Route("/user/workout/{id}/goal", name="goal", methods={"POST","PUT","PATCH"})
+     * @Route("/user/{id}/workout/goal", name="goal", methods={"POST","PUT","PATCH"})
      */
     public function goal(): Response
     {
@@ -74,16 +108,21 @@ class UserController extends AbstractController
      /**
      * @Route("/register", name="register", methods={"POST","GET"})
      */
-    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator) 
+    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, ObjectNormalizer $objectNormalizer, DenormalizerInterface $denormalizerInterface) 
     {
 
         $jsonContent = $request->getContent();
+        
+        $test3 = $denormalizerInterface->denormalize($jsonContent, User::class, 'json');
+        
+        // $user = $serializer->deserialize($jsonContent, User::class, 'json' );
+        
+        // $test2 = $user->getfitnessRoom();
+        // $test = $objectNormalizer->normalize($user);
+
+        dd($test3);
 
 
-        $user = $serializer->deserialize($jsonContent, User::class, 'json' );
-        
-        
-        dd($user);
         //  On valide l'entité désérialisée
         $errors = $validator->validate($user);
 
