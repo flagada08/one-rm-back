@@ -33,7 +33,6 @@ class UserController extends AbstractController
         return $this->json($userData,  Response::HTTP_OK, [], ['groups' => 'infos']);
     }
 
-
     /**
      * @Route("/user/{id}/edit", name="user", methods={"PUT","PATCH"})
      */
@@ -55,38 +54,25 @@ class UserController extends AbstractController
 
         return $this->json(['message' => 'User modifié.'], Response::HTTP_OK);
     }
-
-
-    /**
-     * @Route("/user/{id}/workout", name="workout")
-     */
-    public function workout(User $exercise, ExerciseRepository $exerciseRepository): Response
-    {
-
-        $currentExercise = $exerciseRepository->find($exercise);
-
-        return $this->json($currentExercise);
-
-    }
-    // /**
-    //  * @Route("/user/{id}/workout", name="workout")
-    //  */
-    // public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository): Response
-    // {
-
-    //     $currentExercise = $exerciseRepository->find($exercise);
-
-    //     return $this->json($currentExercise);
-
-    // }
-
+    
     /**
      * @Route("/user/{id}/performances", name="performances")
      */
     public function performance(User $user): Response
     {
-        //TODO
+        return $this->json('coucou');
     }
+
+    /**
+     * @Route("/user/{id}/workout", name="test")
+     */
+    public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository){
+
+        $currentExercise = $exerciseRepository->find($exercise);
+
+        return $this->json($currentExercise);
+    }    
+
 
 
     /**
