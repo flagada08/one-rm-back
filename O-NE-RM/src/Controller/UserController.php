@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
+
 use App\Entity\User;
 use App\Entity\Exercise;
 use App\Repository\UserRepository;
 use App\Repository\ExerciseRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\FitnessRoomRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -90,7 +90,7 @@ class UserController extends AbstractController
     }
 
      /**
-     * @Route("/register", name="register", methods={"POST","GET"})
+     * @Route("/register", name="register", methods={"POST"})
      */
     public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator) 
     {
@@ -105,8 +105,10 @@ class UserController extends AbstractController
 
         // Si nombre d'erreur > 0 alors on renvoie une erreur
         if (count($errors) > 0) {
+
             // On retourne le tableau d'erreurs en Json au front avec un status code 422
             return $this->json('ca marche pas', Response::HTTP_UNPROCESSABLE_ENTITY);
+            
         }
 
         
@@ -117,19 +119,9 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         // REST nous dit : status 201 + Location: movies/{id}
-        return $this->json(['message' => 'coucou laurie'], Response::HTTP_CREATED);
+        return $this->json(['message' => 'utilisateur crée'], Response::HTTP_CREATED);
 
     }
 
-    // /**
-    //  * @Route("/test", name="test", methods={"POST","GET"})
-    //  */
-    // public function test(FitnessRoomRepository $fitnessRoomRepository, SerializerInterface $serializer) {
-
-    //     $test = $fitnessRoomRepository->find(2);
-    
-
-    //     return $this->json($test, Response::HTTP_OK, [], ['groups' => 'test']);
-    // }
 
 }
