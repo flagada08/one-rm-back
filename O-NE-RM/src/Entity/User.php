@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -22,42 +23,50 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups("infos")
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups("infos")
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Groups("infos")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=10)
+     * @Groups("infos")
      */
     private $gender;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Groups("infos")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=70)
+     * @Groups("infos")
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("infos")
      */
     private $age;
 
     /**
      * @ORM\ManyToOne(targetEntity=FitnessRoom::class, inversedBy="users")
+     * @Groups("infos")
      */
     private $fitnessRoom;
 
