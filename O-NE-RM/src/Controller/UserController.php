@@ -2,22 +2,20 @@
 
 namespace App\Controller;
 
-use App\Entity\Exercise;
 use App\Entity\User;
-use App\Normalizer\EntityNormalizer;
-use App\Repository\ExerciseRepository;
+use App\Entity\Exercise;
 use App\Repository\UserRepository;
+use App\Repository\ExerciseRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\FitnessRoomRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
 
 class UserController extends AbstractController
 {
@@ -32,7 +30,6 @@ class UserController extends AbstractController
 
         return $this->json($userData,  Response::HTTP_OK, [], ['groups' => 'infos']);
     }
-
 
     /**
      * @Route("/user/{id}/edit", name="user", methods={"PUT","PATCH"})
@@ -56,37 +53,24 @@ class UserController extends AbstractController
         return $this->json(['message' => 'User modifié.'], Response::HTTP_OK);
     }
 
-
-    /**
-     * @Route("/user/{id}/workout", name="workout")
-     */
-    public function workout(User $exercise, ExerciseRepository $exerciseRepository): Response
-    {
-
-        $currentExercise = $exerciseRepository->find($exercise);
-
-        return $this->json($currentExercise);
-
-    }
-    // /**
-    //  * @Route("/user/{id}/workout", name="workout")
-    //  */
-    // public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository): Response
-    // {
-
-    //     $currentExercise = $exerciseRepository->find($exercise);
-
-    //     return $this->json($currentExercise);
-
-    // }
-
     /**
      * @Route("/user/{id}/performances", name="performances")
      */
     public function performance(User $user): Response
     {
-        //TODO
+        return $this->json('coucou');
     }
+
+    /**
+     * @Route("/user/{id}/workout/", name="test")
+     */
+    public function workout(User $user, Exercise $exercise, ExerciseRepository $exerciseRepository){
+
+        $currentExercise = $exerciseRepository->find($exercise);
+
+        return $this->json($currentExercise);
+    }    
+
 
 
     /**
@@ -108,20 +92,13 @@ class UserController extends AbstractController
      /**
      * @Route("/register", name="register", methods={"POST","GET"})
      */
-    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, ObjectNormalizer $objectNormalizer, DenormalizerInterface $denormalizerInterface) 
+    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator) 
     {
 
         $jsonContent = $request->getContent();
         
-        $test3 = $denormalizerInterface->denormalize($jsonContent, User::class, 'json');
         
-        // $user = $serializer->deserialize($jsonContent, User::class, 'json' );
-        
-        // $test2 = $user->getfitnessRoom();
-        // $test = $objectNormalizer->normalize($user);
-
-        dd($test3);
-
+        $user = $serializer->deserialize($jsonContent, User::class, 'json' );
 
         //  On valide l'entité désérialisée
         $errors = $validator->validate($user);
@@ -140,13 +117,8 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         // REST nous dit : status 201 + Location: movies/{id}
-        return $this->redirectToRoute(
-            'home',
-            [
-                'id' => $user->getId()
-            ],
-            Response::HTTP_CREATED
-        );
+        return $this->json(['message' => 'coucou laurie'], Response::HTTP_CREATED);
+
     }
 
     // /**
@@ -156,8 +128,6 @@ class UserController extends AbstractController
 
     //     $test = $fitnessRoomRepository->find(2);
     
-
-        
 
     //     return $this->json($test, Response::HTTP_OK, [], ['groups' => 'test']);
     // }

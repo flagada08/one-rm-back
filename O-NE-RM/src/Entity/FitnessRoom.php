@@ -2,11 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FitnessRoomRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=FitnessRoomRepository::class)
@@ -17,26 +16,21 @@ class FitnessRoom
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("test")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=50)
-     * @Groups("test")
-     * @Groups("infos")
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * 
+     * @ORM\Column(type="string", length=50)
      */
     private $password;
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="fitnessRoom")
-     * 
      */
     private $users;
 

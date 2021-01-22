@@ -15,11 +15,11 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function Home(UserRepository $user, SerializerInterface $serializer): Response
+    public function Home(ExerciseRepository $exercise): Response
     {
 
-        $list = $user->findAll();
+        $list = $exercise->findAll();
         
-        return $this->json($list, Response::HTTP_OK, [], ['groups' => 'test']);
+        return $this->json($list, Response::HTTP_OK);
     }
 }

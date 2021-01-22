@@ -22,8 +22,7 @@ class Exercise
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=70)
-     * @Groups("workout_get")
+     * @ORM\Column(type="string", length=40)
      */
     private $name;
 
@@ -46,9 +45,9 @@ class Exercise
     private $advice;
 
     /**
-     * @ORM\OneToMany(targetEntity=Goal::class, mappedBy="exercise", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="exercise", orphanRemoval=true)
      */
-    private $goals;
+    private $comments;
 
     /**
      * @ORM\OneToMany(targetEntity=Progress::class, mappedBy="exercise", orphanRemoval=true)
@@ -56,15 +55,15 @@ class Exercise
     private $progress;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="exercise", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Goal::class, mappedBy="exercise", orphanRemoval=true)
      */
-    private $comments;
+    private $goals;
 
     public function __construct()
     {
-        $this->goals = new ArrayCollection();
-        $this->progress = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->progress = new ArrayCollection();
+        $this->goals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -121,29 +120,29 @@ class Exercise
     }
 
     /**
-     * @return Collection|Goal[]
+     * @return Collection|Comment[]
      */
-    public function getGoals(): Collection
+    public function getComments(): Collection
     {
-        return $this->goals;
+        return $this->comments;
     }
 
-    public function addGoal(Goal $goal): self
+    public function addComment(Comment $comment): self
     {
-        if (!$this->goals->contains($goal)) {
-            $this->goals[] = $goal;
-            $goal->setExercise($this);
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setExercise($this);
         }
 
         return $this;
     }
 
-    public function removeGoal(Goal $goal): self
+    public function removeComment(Comment $comment): self
     {
-        if ($this->goals->removeElement($goal)) {
+        if ($this->comments->removeElement($comment)) {
             // set the owning side to null (unless already changed)
-            if ($goal->getExercise() === $this) {
-                $goal->setExercise(null);
+            if ($comment->getExercise() === $this) {
+                $comment->setExercise(null);
             }
         }
 
@@ -181,29 +180,29 @@ class Exercise
     }
 
     /**
-     * @return Collection|Comment[]
+     * @return Collection|Goal[]
      */
-    public function getComments(): Collection
+    public function getGoals(): Collection
     {
-        return $this->comments;
+        return $this->goals;
     }
 
-    public function addComment(Comment $comment): self
+    public function addGoal(Goal $goal): self
     {
-        if (!$this->comments->contains($comment)) {
-            $this->comments[] = $comment;
-            $comment->setExercise($this);
+        if (!$this->goals->contains($goal)) {
+            $this->goals[] = $goal;
+            $goal->setExercise($this);
         }
 
         return $this;
     }
 
-    public function removeComment(Comment $comment): self
+    public function removeGoal(Goal $goal): self
     {
-        if ($this->comments->removeElement($comment)) {
+        if ($this->goals->removeElement($goal)) {
             // set the owning side to null (unless already changed)
-            if ($comment->getExercise() === $this) {
-                $comment->setExercise(null);
+            if ($goal->getExercise() === $this) {
+                $goal->setExercise(null);
             }
         }
 

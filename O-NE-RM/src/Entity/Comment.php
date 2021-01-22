@@ -2,9 +2,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Exercise;
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommentRepository;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
