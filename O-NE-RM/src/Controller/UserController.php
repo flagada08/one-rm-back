@@ -64,7 +64,7 @@ class UserController extends AbstractController
     /**
      * @Route("/user/{id}/workout/", name="test")
      */
-    public function workout(User $user, Exercise $exercise, ExerciseRepository $exerciseRepository){
+    public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository){
 
         $currentExercise = $exerciseRepository->find($exercise);
 
