@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
@@ -92,13 +92,20 @@ class UserController extends AbstractController
      /**
      * @Route("/register", name="register", methods={"POST"})
      */
-    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator) 
+    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder) 
     {
 
         $jsonContent = $request->getContent();
         
         
         $user = $serializer->deserialize($jsonContent, User::class, 'json' );
+
+        $passwordToHash = $user->getPassword();
+
+        $passwordEncoded = $encoder->encodePassword($user, $passwordToHash);
+
+        $user->setPassword($passwordEncoded);
+
 
         //  On valide l'entité désérialisée
         $errors = $validator->validate($user);
@@ -110,7 +117,6 @@ class UserController extends AbstractController
             return $this->json('ca marche pas', Response::HTTP_UNPROCESSABLE_ENTITY);
             
         }
-
         
         // On persiste les données
         $entityManager->persist($user);
