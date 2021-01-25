@@ -19,6 +19,7 @@ class User implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups("progress_get")
+     * @Groups("goals_get")
      */
     private $id;
 
@@ -53,6 +54,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=50)
      * @Groups("infos")
      * @Groups("progress_get")
+     * @Groups("goals_get")
      */
     private $firstname;
 
@@ -60,6 +62,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=70)
      * @Groups("infos")
      * @Groups("progress_get")
+     * @Groups("goals_get")
      */
     private $lastname;
 
