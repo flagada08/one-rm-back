@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Exercise;
+use App\Entity\Progress;
 use App\Repository\UserRepository;
 use App\Repository\ExerciseRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,7 +16,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserController extends AbstractController
 {
@@ -58,7 +61,9 @@ class UserController extends AbstractController
      */
     public function performance(User $user): Response
     {
-        return $this->json('coucou');
+        $performances = $user->getProgress();
+
+        return $this->json($performances, Response::HTTP_OK, []);
     }
 
     /**
@@ -76,9 +81,19 @@ class UserController extends AbstractController
     /**
      * @Route("/user/{id}/workout/newPerf", name="newPerformance", methods={"POST"})
      */
-    public function newPerf(): Response
+    public function newPerf(Exercise $exercise, Request $request, SerializerInterface $serializer): Response
     {
-        //TODO
+
+        $jsonContent = $request->getContent();
+
+        $newPerformance = $serializer->deserialize($jsonContent, Progress::class, 'json');
+
+
+        $newPerformance->setUser();
+        
+        
+
+
     }
 
      /**
