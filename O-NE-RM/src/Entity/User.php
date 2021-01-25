@@ -18,18 +18,21 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("progress_get")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups("infos")
+     * 
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
      * @Groups("infos")
+     * 
      */
     private $roles = [];
 
@@ -49,12 +52,14 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("infos")
+     * @Groups("progress_get")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=70)
      * @Groups("infos")
+     * @Groups("progress_get")
      */
     private $lastname;
 
