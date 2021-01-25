@@ -28,7 +28,7 @@ class UserController extends AbstractController
     /**
      * Méthode permettant de retourner les informations utilisateur
      * 
-     * @Route("/user/{id}/profil", name="profil")
+     * @Route("/api/user/{id}/profil", name="profil")
      */
     public function profil(User $user, UserRepository $userRepository): Response
     {
@@ -40,7 +40,7 @@ class UserController extends AbstractController
     /**
      * Méthode permettant de modifier les informations utilisateur
      * 
-     * @Route("/user/{id}/edit", name="user", methods={"PUT","PATCH"})
+     * @Route("/api/user/{id}/edit", name="user", methods={"PUT","PATCH"})
      */
     public function edit(User $user, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
@@ -66,7 +66,7 @@ class UserController extends AbstractController
     /**
      * Retourne un exercice en fonction de l'ID
      * 
-     * @Route("/user/{id}/workout/", name="test")
+     * @Route("/api/user/{id}/workout/", name="test")
      */
     public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository)
     {
@@ -82,7 +82,7 @@ class UserController extends AbstractController
     /**
      * Méthode permettant de retourner la liste des performances associées à un utilisateur et aux exercices
      * 
-     * @Route("user/{id}/performances", name="performances")
+     * @Route("/api/user/{id}/performances", name="performances")
      */
     public function performance(User $user, ProgressRepository $progressRepository): Response        
     {
@@ -100,7 +100,7 @@ class UserController extends AbstractController
     /**
      * Méthode permettant d'ajouter une nouvelle performance en BDD
      * 
-     * @Route("/user/{id}/workout/newPerf", name="newPerformance", methods={"POST"})
+     * @Route("/api/user/{id}/workout/newPerf", name="newPerformance", methods={"POST"})
      */
     public function newPerf(Exercise $exercise, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
@@ -135,7 +135,9 @@ class UserController extends AbstractController
     // =============================== Partie Objectifs ================================================
 
     /**
-     * @Route("/user/{id}/workout/allgoals", name="allgoals")
+     * Méthode permettant de récupérer tous les objectifs d'un utilisateur (tous exercices confondus)
+     * 
+     * @Route("/api/user/{id}/workout/allgoals", name="allgoals")
      */
     public function getAllGoals(User $user, GoalRepository $goal)
     {
@@ -148,7 +150,7 @@ class UserController extends AbstractController
     /**
      * Méthode qui permet d'ajouter un objectif en BDD
      * 
-     * @Route("/user/{id}/workout/goal", name="goal", methods={"POST","PUT","PATCH"})
+     * @Route("/api/user/{id}/workout/goal", name="goal", methods={"POST","PUT","PATCH"})
      */
     public function newGoal(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager): Response
     {
@@ -177,7 +179,7 @@ class UserController extends AbstractController
     /**
      * Méthode permettant de créer un utilisateur en BDD
      * 
-     * @Route("/register", name="register", methods={"POST"})
+     * @Route("/api/register", name="register", methods={"POST"})
      */
     public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder) 
     {
