@@ -8,6 +8,7 @@ use App\Entity\Exercise;
 use App\Entity\Progress;
 use App\Repository\UserRepository;
 use App\Repository\ExerciseRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -81,19 +82,34 @@ class UserController extends AbstractController
     /**
      * @Route("/user/{id}/workout/newPerf", name="newPerformance", methods={"POST"})
      */
-    public function newPerf(Exercise $exercise, Request $request, SerializerInterface $serializer): Response
+    public function newPerf(Exercise $exercise, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
 
         $jsonContent = $request->getContent();
 
         $newPerformance = $serializer->deserialize($jsonContent, Progress::class, 'json');
 
+         //  On valide l'entité désérialisée
+         $errors = $validator->validate($newPerformance);
 
-        $newPerformance->setUser();
+         // Si nombre d'erreur > 0 alors on renvoie une erreur
+         if (count($errors) > 0) {
+ 
+             // On retourne le tableau d'erreurs en Json au front avec un status code 422
+             return $this->json('ca marche pas', Response::HTTP_UNPROCESSABLE_ENTITY);
+             
+         }
+         
+         // On persiste les données
+         $entityManager->persist($newPerformance);
+ 
+         // On flush pour enregistrer en BDD
+         $entityManager->flush();
+ 
+         // REST nous dit : status 201 + Location: movies/{id}
+         return $this->json(['message' => 'performance ajoutée en base'], Response::HTTP_CREATED);
         
         
-
-
     }
 
      /**
