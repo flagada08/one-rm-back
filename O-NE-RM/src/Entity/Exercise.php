@@ -18,29 +18,34 @@ class Exercise
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups("workout_get")
+     * @Groups("progress_get")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups("progress_get")
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups("workout_get")
+     * @Groups("progress_get")
      */
     private $difficulty;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups("workout_get")
+     * @Groups("progress_get")
      */
     private $illustration;
 
     /**
      * @ORM\Column(type="text")
      * @Groups("workout_get")
+     * @Groups("progress_get")
      */
     private $advice;
 

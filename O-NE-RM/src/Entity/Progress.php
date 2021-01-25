@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\ProgressRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProgressRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ProgressRepository::class)
@@ -14,33 +15,39 @@ class Progress
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("progress_get")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("progress_get")
      */
     private $date;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("progress_get")
      */
     private $repetition;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("progress_get")
      */
     private $weight;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="progress")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("progress_get")
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Exercise::class, inversedBy="progress")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("progress_get")
      */
     private $exercise;
 
