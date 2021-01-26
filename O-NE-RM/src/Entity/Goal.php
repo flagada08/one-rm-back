@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\GoalRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\GoalRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=GoalRepository::class)
@@ -14,28 +15,33 @@ class Goal
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("goals_get")
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("goals_get")
      */
     private $repetition;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups("goals_get")
      */
     private $weight;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="goals")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("goals_get")
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Exercise::class, inversedBy="goals")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("goals_get")
      */
     private $exercise;
 

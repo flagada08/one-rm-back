@@ -5,29 +5,30 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Entity\Exercise;
+use App\Entity\Goal;
 use App\Entity\Progress;
-use Doctrine\ORM\EntityManager;
 use App\Repository\UserRepository;
 use App\Repository\ExerciseRepository;
+use App\Repository\GoalRepository;
 use App\Repository\ProgressRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
 {
-
+    // =============================== Partie Utilisateur ================================================
 
     /**
-     * @Route("/user/{id}/profil", name="profil")
+     * Méthode permettant de retourner les informations utilisateur
+     * 
+     * @Route("/api/user/{id}/profil", name="profil")
      */
     public function profil(User $user, UserRepository $userRepository): Response
     {
@@ -37,7 +38,9 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/user/{id}/edit", name="user", methods={"PUT","PATCH"})
+     * Méthode permettant de modifier les informations utilisateur
+     * 
+     * @Route("/api/user/{id}/edit", name="user", methods={"PUT","PATCH"})
      */
     public function edit(User $user, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
@@ -58,9 +61,12 @@ class UserController extends AbstractController
         return $this->json(['message' => 'User modifié.'], Response::HTTP_OK);
     }
 
+    // =============================== Partie Execices ================================================
     
     /**
-     * @Route("/user/{id}/workout/", name="test")
+     * Retourne un exercice en fonction de l'ID
+     * 
+     * @Route("/api/user/{id}/workout/", name="test")
      */
     public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository)
     {
@@ -71,26 +77,30 @@ class UserController extends AbstractController
     }    
     
 
+    // =============================== Partie Performances ================================================
+
     /**
-     * @Route("user/{id}/performances", name="performances")
+     * Méthode permettant de retourner la liste des performances associées à un utilisateur et aux exercices
+     * 
+     * @Route("/api/user/{id}/performances", name="performances")
      */
     public function performance(User $user, ProgressRepository $progressRepository): Response        
     {
         
-        $currentPerformance = $progressRepository->findBy(
+        $currentPerformances = $progressRepository->findBy(
             ['user' => $user ]
         ); 
 
-
-        // Va chercher la progression dont progression.user = 1
-        return $this->json($currentPerformance, Response::HTTP_OK,[], ['groups' => 'progress_get']);
+        return $this->json($currentPerformances, Response::HTTP_OK,[], ['groups' => 'progress_get']);
 
     }
     
     
 
     /**
-     * @Route("/user/{id}/workout/newPerf", name="newPerformance", methods={"POST"})
+     * Méthode permettant d'ajouter une nouvelle performance en BDD
+     * 
+     * @Route("/api/user/{id}/workout/newPerf", name="newPerformance", methods={"POST"})
      */
     public function newPerf(Exercise $exercise, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
@@ -122,16 +132,33 @@ class UserController extends AbstractController
         
     }
 
-     /**
-     * @Route("/user/{id}/workout/goal", name="goal", methods={"POST","PUT","PATCH"})
+    // =============================== Partie Objectifs ================================================
+
+    /**
+     * Méthode permettant de récupérer tous les objectifs d'un utilisateur (tous exercices confondus)
+     * 
+     * @Route("/api/user/{id}/workout/allgoals", name="allgoals")
      */
-    public function goal(Request $request, SerializerInterface $serializer,ValidatorInterface $validator, EntityManagerInterface $entityManager): Response
+    public function getAllGoals(User $user, GoalRepository $goal)
     {
-        // Récuper les informations 
-        $goalContent = $request->getContent();
-        // Déserialisation des données envoyées par le front
-        $goal = $serializer->deserialize($goalContent, Goal::class, 'json' );
-        //  On valide l'entité désérialisée
+        $goalList = $goal->findBy(['user' => $user]);
+
+
+        return $this->json($goalList, Response::HTTP_OK,[], ['groups' => 'goals_get']);
+    }
+
+    /**
+     * Méthode qui permet d'ajouter un objectif en BDD
+     * 
+     * @Route("/api/user/{id}/workout/goal", name="goal", methods={"POST","PUT","PATCH"})
+     */
+    public function newGoal(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager): Response
+    {
+        
+        $jsonContent = $request->getContent();
+        
+        $goal = $serializer->deserialize($jsonContent, Goal::class, 'json' );
+       
         $errors = $validator->validate($goal);
 
         // Si nombre d'erreur > 0 alors on renvoie une erreur
@@ -140,17 +167,19 @@ class UserController extends AbstractController
             return $this->json('ça ne fonctionne pas', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        // Renvoyer une réponse enenvoyant les données en BDD.
         $entityManager->persist($goal);
-        $entityManager->flush($goal);
 
-        return $this->json(['message' => 'Goal a été créé'], Response::HTTP_CREATED);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'L\'objectif a été créé'], Response::HTTP_CREATED);
 
         //TODO a checker et a modifier pour put et patch
     }
 
-     /**
-     * @Route("/register", name="register", methods={"POST"})
+    /**
+     * Méthode permettant de créer un utilisateur en BDD
+     * 
+     * @Route("/api/register", name="register", methods={"POST"})
      */
     public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder) 
     {
