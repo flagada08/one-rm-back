@@ -20,6 +20,6 @@ class HomeController extends AbstractController
 
         $list = $exercise->findAll();
         
-        return $this->json($list, Response::HTTP_OK);
+        return $this->json($list, Response::HTTP_OK, [], ['groups' => 'workout_get']);
     }
 }
