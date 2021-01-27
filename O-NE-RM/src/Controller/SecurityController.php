@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -22,20 +23,17 @@ class SecurityController extends AbstractController
     /**
      * Méthode qui va être appelée si le login JSON a fonctionné
      * 
-     * @Route("/api/login", name="api_login", methods={"POST"})
+     * @Route("/api/login_check", name="api_login", methods={"POST"})
      * 
      */
-    public function apiLogin(Request $request)
-    {
-        // Le user est connecté, on le récupère
-        $user = $this->getUser();
+//     public function apiLogin(Request $request, TokenInterface $token)
+//     {
+//         // Le user est connecté, on le récupère
+//         $user = $token->getUser();
 
-        // On retourne au front les infos nécessaires (selon le projet)
-        // à adapter selon vos besoins
-        return $this->json([
-            'username' => $user->getUsername(),
-            'roles' => $user->getRoles(),
-        ]);
-    }
+//         // On retourne au front les infos nécessaires (selon le projet)
+//         // à adapter selon vos besoins
+//         return $this->json($user);
+//     }
 }
 

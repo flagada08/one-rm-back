@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserController extends AbstractController
 {
@@ -28,13 +29,13 @@ class UserController extends AbstractController
     /**
      * Méthode permettant de retourner les informations utilisateur
      * 
-     * @Route("/api/user/{id}/profil", name="profil")
+     * @Route("/api/user/profil", name="profil")
      */
-    public function profil(User $user, UserRepository $userRepository): Response
+    public function profil(): Response
     {
-        $userData = $userRepository->find($user);
+        $user = $this->getUser();
 
-        return $this->json($userData,  Response::HTTP_OK, [], ['groups' => 'infos']);
+        return $this->json($user,  Response::HTTP_OK, [], ['groups' => 'infos']);
     }
 
     /**
@@ -71,7 +72,9 @@ class UserController extends AbstractController
     public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository)
     {
         
-        $currentExercise = $exerciseRepository->find($exercise);
+        $currentExercise = $exerciseRepository->find(16);
+
+        dd($currentExercise);
         
         return $this->json($currentExercise);
     }    
@@ -82,13 +85,13 @@ class UserController extends AbstractController
     /**
      * Méthode permettant de retourner la liste des performances associées à un utilisateur et aux exercices
      * 
-     * @Route("/api/user/{id}/performances", name="performances")
+     * @Route("/api/user/performances", name="performances")
      */
-    public function performance(User $user, ProgressRepository $progressRepository): Response        
+    public function performance(ProgressRepository $progressRepository): Response        
     {
         
         $currentPerformances = $progressRepository->findBy(
-            ['user' => $user ]
+            ['user' => $this->getuser() ]
         ); 
 
         return $this->json($currentPerformances, Response::HTTP_OK,[], ['groups' => 'progress_get']);
@@ -179,7 +182,7 @@ class UserController extends AbstractController
     /**
      * Méthode permettant de créer un utilisateur en BDD
      * 
-     * @Route("/api/register", name="register", methods={"POST"})
+     * @Route("/register", name="register", methods={"POST"})
      */
     public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder) 
     {

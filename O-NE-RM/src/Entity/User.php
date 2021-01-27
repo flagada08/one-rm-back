@@ -18,6 +18,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("infos")
      * @Groups("progress_get")
      * @Groups("goals_get")
      */

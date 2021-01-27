@@ -3,32 +3,59 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Entity\Comment;
 use App\Entity\Exercise;
+use App\Entity\Progress;
 use App\Entity\FitnessRoom;
+use Doctrine\DBAL\Connection;
+use App\Repository\UserRepository;
+use App\Repository\ExerciseRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\DataFixtures\Provider\OneRmProvider;
+use App\Entity\Goal;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class AppFixtures extends Fixture
+
+class AppFixtures extends Fixture implements DependentFixtureInterface
 {
+
+    private $userRepository;
+
+    private $exerciseRepository;
+
+
+
+    public function __construct(UserRepository $userRepository, ExerciseRepository $exerciseRepository)
+    {
+        $this->userRepository = $userRepository;
+        $this->exerciseRepository = $exerciseRepository;
+       
+    }
+
+    private function truncate(Connection $connection)
+    {
+        // On passen mode SQL ! On cause avec MySQL
+
+        // Désactivation des contraintes FK
+        $users = $connection->query('SET foreign_key_checks = 0');
+
+        // On tronque
+        $users = $connection->query('TRUNCATE TABLE fitness_room');
+        $users = $connection->query('TRUNCATE TABLE progress');
+        $users = $connection->query('TRUNCATE TABLE comment');
+        $users = $connection->query('TRUNCATE TABLE goal');
+
+
+        // etc.
+    }
+
     public function load(ObjectManager $manager)
     {
+        $this->truncate($manager->getConnection());
 
-        //On va créer les exercices avec l'aide du provider
-        
-        for ($i = 1; $i <= 16; $i++){
-
-            $provider = new OneRmProvider;
-
-            $exercise = new Exercise();
-
-            $exercise->setName($provider->ExerciseName($i));
-            $exercise->setDifficulty($provider->difficulty($i));
-            $exercise->setIllustration('toto'.$i.'.png');
-            $exercise->setAdvice($provider->advice($i));
-
-            $manager->persist($exercise);
-        }
 
         // On créé des salles de sport fictives 
 
@@ -42,27 +69,68 @@ class AppFixtures extends Fixture
             $manager->persist($fitnessRoom);
         }
 
-        // on créé des utilisateur fictifs
-
-        for ($i = 1; $i <= 16; $i++){
-
-            $user = new User();
-
-            $gender = ['homme', 'femme'];
-
-            $user->setFirstName('prenom' . $i);
-            $user->setLastname('nom' . $i);
-            $user->setGender(array_rand($gender));
-            $user->setAge(mt_rand(15,99));
-            $user->setEmail('toto' . $i . '@email.com');
-            $user->setPassword('password' . $i);
-            $user->setRoles(['ROLE_USER']);
+        // on crée des progres aléatoires
 
 
-            $manager->persist($user);
+        for ($i = 1; $i <= 130; $i++){
+
+            $progress = new Progress();
+            
+
+            $progress->setDate(new \DateTime());
+            $progress->setRepetition(mt_rand(1,50));
+            $progress->setWeight(mt_rand(1,200));
+            $progress->setUser($this->userRepository->find(mt_rand(1,9)));
+            $progress->setExercise($this->exerciseRepository->find(mt_rand(1,15)));
+
+
+            $manager->persist($progress);
         }
-
         
+        // on crée des comment aléatoires
+
+
+        for ($i = 1; $i <= 130; $i++){
+
+            $comment = new Comment();
+            
+
+            $comment->setContent('loremblablabla tu devrais plutot faire comme ci et pas comme ça');
+            $comment->setUser($this->userRepository->find(mt_rand(1,9)));
+            $comment->setExercise($this->exerciseRepository->find(1,15));
+
+
+            $manager->persist($comment);
+        }
+        
+            // on crée des objectifs (goal) aléatoires
+
+
+        for ($i = 1; $i <= 130; $i++){
+
+            $goal = new Goal();
+            
+
+            $goal->setRepetition(mt_rand(1,50));
+            $goal->setWeight(mt_rand(1,200));
+            $goal->setUser($this->userRepository->find(mt_rand(1,9)));
+            $goal->setExercise($this->exerciseRepository->find(mt_rand(1,15)));
+
+
+            $manager->persist($goal);
+        }
+        
+
         $manager->flush();
     }
+
+    public function getDependencies()
+    {
+        return array(
+            UserFixtures::class,
+            ExerciseFixtures::class
+        );
+    }
+
+
 }
