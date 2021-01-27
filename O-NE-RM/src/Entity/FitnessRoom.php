@@ -18,12 +18,14 @@ class FitnessRoom
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups("infos")
+     * @Groups("listUsersFitnesstRoom")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("infos")
+     * @Groups("listUsersFitnesstRoom")
      */
     private $name;
 

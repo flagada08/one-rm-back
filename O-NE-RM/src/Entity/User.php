@@ -21,12 +21,14 @@ class User implements UserInterface
      * @Groups("infos")
      * @Groups("progress_get")
      * @Groups("goals_get")
+     * @Groups("listUsersFitnesstRoom")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups("infos")
+     * @Groups("listUsersFitnesstRoom")
      * 
      */
     private $email;
@@ -34,6 +36,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="json")
      * @Groups("infos")
+     * @Groups("listUsersFitnesstRoom")
      * 
      */
     private $roles = [];
@@ -42,12 +45,14 @@ class User implements UserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Groups("infos")
+     * 
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=10)
      * @Groups("infos")
+     * @Groups("listUsersFitnesstRoom")
      */
     private $gender;
 
@@ -56,6 +61,7 @@ class User implements UserInterface
      * @Groups("infos")
      * @Groups("progress_get")
      * @Groups("goals_get")
+     * @Groups("listUsersFitnesstRoom")
      */
     private $firstname;
 
@@ -64,18 +70,21 @@ class User implements UserInterface
      * @Groups("infos")
      * @Groups("progress_get")
      * @Groups("goals_get")
+     * @Groups("listUsersFitnesstRoom")
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups("infos")
+     * @Groups("listUsersFitnesstRoom")
      */
     private $age;
 
     /**
      * @ORM\ManyToOne(targetEntity=FitnessRoom::class, inversedBy="users")
      * @Groups("infos")
+     * @Groups("listUsersFitnesstRoom")
      */
     private $fitnessRoom;
 

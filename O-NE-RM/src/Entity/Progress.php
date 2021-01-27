@@ -28,12 +28,14 @@ class Progress
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Groups("progress_get")
+     * @Groups("progressUser")
      */
     private $repetition;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Groups("progress_get")
+     * @Groups("progressUser")
      */
     private $weight;
 
@@ -48,6 +50,8 @@ class Progress
      * @ORM\ManyToOne(targetEntity=Exercise::class, inversedBy="progress")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("progress_get")
+     * @Groups("progressUser")
+     * 
      */
     private $exercise;
 
