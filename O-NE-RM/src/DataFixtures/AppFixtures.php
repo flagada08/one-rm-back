@@ -43,7 +43,6 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         $users = $connection->query('SET foreign_key_checks = 0');
 
         // On tronque
-        $users = $connection->query('TRUNCATE TABLE fitness_room');
         $users = $connection->query('TRUNCATE TABLE progress');
         $users = $connection->query('TRUNCATE TABLE comment');
         $users = $connection->query('TRUNCATE TABLE goal');
@@ -57,22 +56,10 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         $this->truncate($manager->getConnection());
 
 
-        // On créé des salles de sport fictives 
-
-        for ($i = 1; $i <= 16; $i++){
-
-            $fitnessRoom = new FitnessRoom();
-
-            $fitnessRoom->setName('salle' . $i);
-            $fitnessRoom->setPassword('password' . $i);
-
-            $manager->persist($fitnessRoom);
-        }
-
         // on crée des progres aléatoires
 
 
-        for ($i = 1; $i <= 130; $i++){
+        for ($i = 0; $i <= 130; $i++){
 
             $progress = new Progress();
             
@@ -90,7 +77,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         // on crée des comment aléatoires
 
 
-        for ($i = 1; $i <= 130; $i++){
+        for ($i = 0; $i <= 130; $i++){
 
             $comment = new Comment();
             
@@ -106,7 +93,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             // on crée des objectifs (goal) aléatoires
 
 
-        for ($i = 1; $i <= 130; $i++){
+        for ($i = 0; $i <= 130; $i++){
 
             $goal = new Goal();
             

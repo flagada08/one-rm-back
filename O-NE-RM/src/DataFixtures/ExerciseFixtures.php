@@ -43,7 +43,7 @@ class ExerciseFixtures extends Fixture
 
         //On va créer les exercices avec l'aide du provider
 
-        for ($i = 1; $i <= 16; $i++){
+        for ($i = 0; $i <= 15; $i++){
 
             $provider = new OneRmProvider;
 

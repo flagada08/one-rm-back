@@ -4,24 +4,24 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use Doctrine\DBAL\Connection;
-use App\Repository\UserRepository;
-use App\Repository\ExerciseRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\DataFixtures\Provider\OneRmProvider;
+use App\Repository\FitnessRoomRepository;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
 
     private $passwordEncoder;
+    private $fitnessRoomRepository;
 
 
-    public function __construct(UserRepository $userRepository, ExerciseRepository $exerciseRepository, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, FitnessRoomRepository $fitnessRoomRepository)
     {
-        $this->userRepository = $userRepository;
-        $this->exerciseRepository = $exerciseRepository;
         $this->passwordEncoder = $passwordEncoder;
+        $this->fitnessRoomRepository = $fitnessRoomRepository;
     }
 
     private function truncate(Connection $connection)
@@ -44,7 +44,7 @@ class UserFixtures extends Fixture
 
         // on créé des utilisateurs fictifs
 
-        for ($i = 1; $i <= 9 ; $i++) {
+        for ($i = 0; $i <= 9 ; $i++) {
             $user = new User();
 
             $gender = ['homme', 'femme'];
@@ -58,6 +58,7 @@ class UserFixtures extends Fixture
             $user->setEmail($provider->username($i). '@' . $provider->username($i) . '.com');
             $user->setPassword($this->passwordEncoder->encodePassword($user, $provider->username($i)));
             $user->setRoles(['ROLE_USER']);
+            $user->setFitnessRoom($this->fitnessRoomRepository->find(mt_rand(1,16)));
 
 
             $manager->persist($user);
@@ -66,6 +67,13 @@ class UserFixtures extends Fixture
 
             $manager->flush();
 
+    }
+
+    public function getDependencies()
+    {
+        return array(
+            FitnessRoomFixtures::class,
+        );
     }
 
 }
