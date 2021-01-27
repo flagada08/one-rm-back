@@ -20,13 +20,16 @@ class Exercise
      * @Groups("workout_get")
      * @Groups("progress_get")
      * @Groups("goals_get")
+     * @Groups("progressUser")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=40)
+     * @Groups("workout_get")
      * @Groups("progress_get")
      * @Groups("goals_get")
+     * @Groups("progressUser")
      */
     private $name;
 
@@ -35,6 +38,7 @@ class Exercise
      * @Groups("workout_get")
      * @Groups("progress_get")
      * @Groups("goals_get")
+     * @Groups("progressUser")
      */
     private $difficulty;
 
@@ -43,6 +47,7 @@ class Exercise
      * @Groups("workout_get")
      * @Groups("progress_get")
      * @Groups("goals_get")
+     * @Groups("progressUser")
      */
     private $illustration;
 
@@ -51,6 +56,7 @@ class Exercise
      * @Groups("workout_get")
      * @Groups("progress_get")
      * @Groups("goals_get")
+     * @Groups("progressUser")
      */
     private $advice;
 

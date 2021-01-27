@@ -2,19 +2,60 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ManagerController extends AbstractController
 {
     /**
-     * @Route("/manager", name="manager")
+     * Méthode qui permet de gérer les demandes d'ouvertures de salle = création d'une salle en BDD.
+     *
+     * @Route("api/back/admin/fitnessroom_add", name="roomrequest", methods={"POST","PUT","PATCH"})
      */
-    public function index(): Response
+    public function newFitnessRoom(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('manager/index.html.twig', [
-            'controller_name' => 'ManagerController',
-        ]);
+        $jsonContent = $request->getContent();
+        $fitnessRoom = $serializer->deserialize($jsonContent, FitnessRoom::class, 'json');
+        //  On valide l'entité désérialisée
+        $errors = $validator->validate($fitnessRoom);
+
+        // Si nombre d'erreur > 0 alors on renvoie une erreur
+        if (count($errors) > 0) {
+            // On retourne le tableau d'erreurs en Json au front avec un status code 422
+            return $this->json('Salle non créée', Response::HTTP_UNPROCESSABLE_ENTITY);  
+        }
+
+        // On persiste les données
+        $entityManager->persist($fitnessRoom);
+        // On flush pour enregistrer en BDD
+        $entityManager->flush($fitnessRoom);
+        // REST nous dit : status 201 + Location: movies/{id}
+        return $this->json(['message' => 'La Salle a été crée'], Response::HTTP_CREATED);
+
+
     }
+
+    /**
+     * Liste des membres par salle de sport
+     * 
+     * @Route("api/back/manager/fitnessroom", name="allusers")
+     *
+     */
+    public function userList(UserRepository $userRepository): Response
+    {
+        $user = $this->getUser();
+
+        $fitnessRoom = $user->getFitnessroom();
+
+        $userList = $userRepository->findBy(['fitnessRoom' => $fitnessRoom]);
+        
+        return $this->json($userList, Response::HTTP_OK,[], ['groups' => 'listUsersFitnesstRoom']);
+    }
+    
 }

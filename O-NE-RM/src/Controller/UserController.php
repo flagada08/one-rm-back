@@ -72,11 +72,12 @@ class UserController extends AbstractController
     public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository)
     {
         
-        $currentExercise = $exerciseRepository->find(16);
+        $currentExercise = $exerciseRepository->find($exercise);
 
         dd($currentExercise);
         
         return $this->json($currentExercise);
+
     }    
     
 
@@ -94,11 +95,28 @@ class UserController extends AbstractController
             ['user' => $this->getuser() ]
         ); 
 
-        return $this->json($currentPerformances, Response::HTTP_OK,[], ['groups' => 'progress_get']);
+
+        return $this->json($currentPerformances, Response::HTTP_OK, [], ['groups' => 'progressUser']);
 
     }
     
+    /**
+     * Méthode permettant d'obtenir que la derniere performance d'un exercice en fonction de l'utilisateur
+     * 
+     * @Route("/api/user/getLastPerformances", name="getLastPerf")
+     */
+    public function getLastPerformances(ProgressRepository $progressRepository)
+    {
+
+        $lastPerformances = $progressRepository->findByExercise($this->getUser());
+
+        return $this->json($lastPerformances, Response::HTTP_OK, [], ['groups' => 'progressUser']);
+
+        //TODO modifier la customQuery pour reussir a ne renvoyer que la derniere performance en date
+
+    }
     
+
 
     /**
      * Méthode permettant d'ajouter une nouvelle performance en BDD
@@ -148,6 +166,20 @@ class UserController extends AbstractController
 
 
         return $this->json($goalList, Response::HTTP_OK,[], ['groups' => 'goals_get']);
+    }
+
+    /**
+     * Méthode qui permet de recuperer l'objectif lié à  l'exercice de l'utilsateur connecté 
+     *
+     * @Route("/api/user/workout/{id}/goal")
+     */
+    public function getGoalForExercise()
+    {
+
+        $user = $this->getUser;
+
+        return $this->json('coucou');
+
     }
 
     /**
