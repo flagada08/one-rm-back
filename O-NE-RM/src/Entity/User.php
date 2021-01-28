@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OrderBy;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -95,6 +96,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Progress::class, mappedBy="user", orphanRemoval=true)
+     * @OrderBy({"date" = "DESC"})
      */
     private $progress;
 
@@ -279,6 +281,7 @@ class User implements UserInterface
 
     /**
      * @return Collection|Progress[]
+     * 
      */
     public function getProgress(): Collection
     {

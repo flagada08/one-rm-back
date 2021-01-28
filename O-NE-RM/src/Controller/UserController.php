@@ -108,9 +108,30 @@ class UserController extends AbstractController
     public function getLastPerformances(ProgressRepository $progressRepository)
     {
 
+        //la custom query trie les objects progress par date 'DESC' du coup en evitant les doublons on s'assure de ne récuperer que la derniere performance en date
+
         $lastPerformances = $progressRepository->findByExercise($this->getUser());
 
-        return $this->json($lastPerformances, Response::HTTP_OK, [], ['groups' => 'progressUser']);
+        $lastPerfToSend = [];
+        $checkExerciseID = [];
+        
+        foreach ($lastPerformances as $progress) {
+
+            $exercise = $progress->getExercise();
+
+            $exerciseID = $exercise->getId();
+
+            if (!in_array($exerciseID, $checkExerciseID)) {
+
+                $checkExerciseID[] = $exerciseID;
+
+                $lastPerfToSend[] = $progress;
+            }
+
+            
+        }
+
+        return $this->json($lastPerfToSend, Response::HTTP_OK, [], ['groups' => 'progressUser']);
 
         //TODO modifier la customQuery pour reussir a ne renvoyer que la derniere performance en date
 

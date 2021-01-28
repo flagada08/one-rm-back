@@ -14,6 +14,7 @@ use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\DataFixtures\Provider\OneRmProvider;
 use App\Entity\Goal;
+use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -68,7 +69,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $progress->setRepetition(mt_rand(1,50));
             $progress->setWeight(mt_rand(1,200));
             $progress->setUser($this->userRepository->find(mt_rand(1,9)));
-            $progress->setExercise($this->exerciseRepository->find(mt_rand(1,15)));
+            $progress->setExercise($this->exerciseRepository->find(mt_rand(1,16)));
 
 
             $manager->persist($progress);
@@ -84,7 +85,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
 
             $comment->setContent('loremblablabla tu devrais plutot faire comme ci et pas comme ça');
             $comment->setUser($this->userRepository->find(mt_rand(1,9)));
-            $comment->setExercise($this->exerciseRepository->find(1,15));
+            $comment->setExercise($this->exerciseRepository->find(mt_rand(1,16)));
 
 
             $manager->persist($comment);
@@ -101,7 +102,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $goal->setRepetition(mt_rand(1,50));
             $goal->setWeight(mt_rand(1,200));
             $goal->setUser($this->userRepository->find(mt_rand(1,9)));
-            $goal->setExercise($this->exerciseRepository->find(mt_rand(1,15)));
+            $goal->setExercise($this->exerciseRepository->find(mt_rand(1,16)));
 
 
             $manager->persist($goal);

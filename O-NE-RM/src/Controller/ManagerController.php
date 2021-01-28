@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ManagerController extends AbstractController
@@ -28,7 +29,7 @@ class ManagerController extends AbstractController
         // Si nombre d'erreur > 0 alors on renvoie une erreur
         if (count($errors) > 0) {
             // On retourne le tableau d'erreurs en Json au front avec un status code 422
-            return $this->json('Salle non créée', Response::HTTP_UNPROCESSABLE_ENTITY);  
+            return $this->json('Salle non créée', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // On persiste les données
@@ -37,13 +38,11 @@ class ManagerController extends AbstractController
         $entityManager->flush($fitnessRoom);
         // REST nous dit : status 201 + Location: movies/{id}
         return $this->json(['message' => 'La Salle a été crée'], Response::HTTP_CREATED);
-
-
     }
 
     /**
      * Liste des membres par salle de sport
-     * 
+     *
      * @Route("api/back/manager/fitnessroom", name="allusers")
      *
      */
@@ -55,7 +54,32 @@ class ManagerController extends AbstractController
 
         $userList = $userRepository->findBy(['fitnessRoom' => $fitnessRoom]);
         
-        return $this->json($userList, Response::HTTP_OK,[], ['groups' => 'listUsersFitnesstRoom']);
+        return $this->json($userList, Response::HTTP_OK, [], ['groups' => 'listUsersFitnesstRoom']);
     }
     
+
+    /**
+     * Méthode permettant de modifier les informations d'un membre
+     *
+     * @Route("/api/back/manager/edit", name="user_edit", methods={"PATCH"})
+     */
+    public function edit(EntityManagerInterface $entityManager, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
+    {
+        $user = $this->getUser();
+        
+        $jsonContent = $request->getContent();
+
+        $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
+        
+        $error = $validator->validate($user);
+
+        if (count($error) > 0) {
+            return $this->json('Erreur', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Informations utilisateur modifiées.'], Response::HTTP_OK);
+
+    }
 }
