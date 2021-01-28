@@ -110,6 +110,43 @@ class UserController extends AbstractController
 
         $lastPerformances = $progressRepository->findByExercise($this->getUser());
 
+        // $lastPerfToSend = [];
+        // $test = [];
+        
+        // foreach($lastPerformances as $progress) {
+
+        //     // dd($lastPerformances);
+        //     // dd($progress->getExercise());
+        //     dump($exercise = $progress->getExercise());
+
+        // $exercise = $progress->getExercise();
+        // $excerciseID = $exercise['id'];
+        // 
+        // if(!in_array(exerciseID, $test))
+        // $test[]= exerciseID;
+        // 
+
+
+            
+        // }
+
+        // exit;
+            
+            // $exercise = $lastPerformances->getExercise()
+    
+        
+
+        // $lastPerformances = $user->getProgress();
+        
+
+        // foreach($lastPerformances as $exercises) {
+
+        //     dd($exercises->getExercise());
+        //     // On veut recuperer les objets du tableau et les stocker dans un tableau seulement si id.exercise n'existe pas deja
+
+
+        // }
+
         return $this->json($lastPerformances, Response::HTTP_OK, [], ['groups' => 'progressUser']);
 
         //TODO modifier la customQuery pour reussir a ne renvoyer que la derniere performance en date

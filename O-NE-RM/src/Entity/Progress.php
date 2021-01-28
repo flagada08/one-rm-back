@@ -22,6 +22,7 @@ class Progress
     /**
      * @ORM\Column(type="datetime")
      * @Groups("progress_get")
+     * @Groups("progressUser")
      */
     private $date;
 
