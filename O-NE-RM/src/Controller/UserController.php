@@ -108,46 +108,30 @@ class UserController extends AbstractController
     public function getLastPerformances(ProgressRepository $progressRepository)
     {
 
+        //la custom query trie les objects progress par date 'DESC' du coup en evitant les doublons on s'assure de ne récuperer que la derniere performance en date
+
         $lastPerformances = $progressRepository->findByExercise($this->getUser());
 
         $lastPerfToSend = [];
-        $test = [];
+        $checkExerciseID = [];
         
-        foreach($lastPerformances as $progress) {
+        foreach ($lastPerformances as $progress) {
 
-        //     // dd($lastPerformances);
-        //     // dd($progress->getExercise());
-        //     dump($exercise = $progress->getExercise());
+            $exercise = $progress->getExercise();
 
-        // $exercise = $progress->getExercise();
-        // $excerciseID = $exercise['id'];
-        
-        // if(!in_array(exerciseID, $test))
-        // $test[]= exerciseID;
-        // // 
+            $exerciseID = $exercise->getId();
 
+            if (!in_array($exerciseID, $checkExerciseID)) {
+
+                $checkExerciseID[] = $exerciseID;
+
+                $lastPerfToSend[] = $progress;
+            }
 
             
-        // }
+        }
 
-        // exit;
-            
-            // $exercise = $lastPerformances->getExercise()
-    
-        
-
-        // $lastPerformances = $user->getProgress();
-        
-
-        // foreach($lastPerformances as $exercises) {
-
-        //     dd($exercises->getExercise());
-        //     // On veut recuperer les objets du tableau et les stocker dans un tableau seulement si id.exercise n'existe pas deja
-
-
-        // }
-
-        return $this->json($lastPerformances, Response::HTTP_OK, [], ['groups' => 'progressUser']);
+        return $this->json($lastPerfToSend, Response::HTTP_OK, [], ['groups' => 'progressUser']);
 
         //TODO modifier la customQuery pour reussir a ne renvoyer que la derniere performance en date
 

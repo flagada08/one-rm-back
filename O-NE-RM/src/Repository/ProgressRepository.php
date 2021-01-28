@@ -29,7 +29,6 @@ class ProgressRepository extends ServiceEntityRepository
             ->Where('progress.user = :val')
             ->setParameter('val', $user)
             ->orderBy('progress.date', 'DESC')
-            ->groupBy('progress.exercise')
             ->getQuery()
             ->getResult()
         ;
