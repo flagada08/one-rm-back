@@ -110,10 +110,10 @@ class UserController extends AbstractController
 
         $lastPerformances = $progressRepository->findByExercise($this->getUser());
 
-        // $lastPerfToSend = [];
-        // $test = [];
+        $lastPerfToSend = [];
+        $test = [];
         
-        // foreach($lastPerformances as $progress) {
+        foreach($lastPerformances as $progress) {
 
         //     // dd($lastPerformances);
         //     // dd($progress->getExercise());
@@ -121,10 +121,10 @@ class UserController extends AbstractController
 
         // $exercise = $progress->getExercise();
         // $excerciseID = $exercise['id'];
-        // 
+        
         // if(!in_array(exerciseID, $test))
         // $test[]= exerciseID;
-        // 
+        // // 
 
 
             
