@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,27 +62,45 @@ class ManagerController extends AbstractController
     /**
      * Méthode permettant de modifier les informations d'un membre
      *
-     * @Route("/api/back/manager/edit", name="user_edit", methods={"PATCH"})
+     * @Route("/api/back/manager/user/{id}/edit", name="user_edit", methods={"PATCH"})
      */
-    public function edit(EntityManagerInterface $entityManager, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
+    public function edit(User $user, EntityManagerInterface $entityManager, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
-        $user = $this->getUser();
-
         $jsonContent = $request->getContent();
 
-        $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
-        
+        $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user] );
+
         $error = $validator->validate($user);
 
         if (count($error) > 0) {
+
             return $this->json('Erreur', Response::HTTP_UNPROCESSABLE_ENTITY);
+
         }
 
         $entityManager->flush();
 
         return $this->json(['message' => 'Informations utilisateur modifiées.'], Response::HTTP_OK);
-
-        //TODO a modifier
+        
 
     }
+
+    /**
+     * Suppression d'un membre
+     * 
+     * @Route("api/back/manager/user/{id}/delete", name="delete_user", methods = {"DELETE"})
+     *
+     */
+    public function userDelete(User $user, EntityManagerInterface $entityManager): Response
+    {
+
+        $entityManager->remove($user);
+
+        $entityManager->flush();
+        
+        return $this->json(['message' => 'Membre supprimé'], Response::HTTP_OK);
+
+    }
+
+
 }
