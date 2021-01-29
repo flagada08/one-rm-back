@@ -19,22 +19,26 @@ class GoalRepository extends ServiceEntityRepository
         parent::__construct($registry, Goal::class);
     }
 
-    // /**
+    
     //  * @return Goal[] Returns an array of Goal objects
     //  */
-    /*
-    public function findByExampleField($value)
+    
+    public function getAllGoals($user)
     {
         return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('g.id', 'ASC')
-            ->setMaxResults(10)
+            ->LeftJoin('g.exercise' , 'e')
+            ->addSelect('e')
+            ->andWhere('g.user = :val')
+            ->setParameter('val', $user)
+            ->orderBy('e.id', 'ASC')
+            ->addorderBy('g.id', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+    
+
+
 
     /*
     public function findOneBySomeField($value): ?Goal

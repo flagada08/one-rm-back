@@ -34,7 +34,7 @@ class Goal
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="goals")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups("goals_get")
+     * 
      */
     private $user;
 

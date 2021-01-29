@@ -190,16 +190,35 @@ class UserController extends AbstractController
     // =============================== Partie Objectifs ================================================
 
     /**
-     * Méthode permettant de récupérer tous les objectifs d'un utilisateur (tous exercices confondus)
+     * Méthode permettant de récupérer les derniers objectifs d'un utilisateur (tous exercices confondus)
      * 
-     * @Route("/api/user/{id}/workout/allgoals", name="allgoals")
+     * @Route("/api/user/getGoals", name="allgoals")
      */
-    public function getAllGoals(User $user, GoalRepository $goal)
+    public function getLastGoals(ExerciseRepository $exerciseRepository)
     {
-        $goalList = $goal->findBy(['user' => $user]);
+        
+        $goalList = $exerciseRepository->getAllGoals($this->getUser());
+
+        $lastGoalsToSend = [];
+        $checkExerciseID = [];
+        
+
+        //Ici on boucle sur les resultats pour ne recuperer que la derniere performance en date d'un exercice pour eviter de se retrouver avec des doublons de performance
+        foreach ($goalList as $goal) {
+
+            $exerciseID = $goal['ID_exercise'];
+
+            if (!in_array($exerciseID, $checkExerciseID)) {
+
+                $checkExerciseID[] = $exerciseID;
+
+                $lastGoalsToSend[] = $goal;
+            }
+
+        }
 
 
-        return $this->json($goalList, Response::HTTP_OK,[], ['groups' => 'goals_get']);
+        return $this->json($lastGoalsToSend, Response::HTTP_OK,[], ['groups' => 'goals_get']);
     }
 
     /**

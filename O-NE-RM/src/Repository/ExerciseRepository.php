@@ -23,18 +23,38 @@ class ExerciseRepository extends ServiceEntityRepository
     //  * @return Exercise[] Returns an array of Exercise objects
     //  */
     
-    // public function findByExampleField($user)
+    // public function getAllGoals($user)
     // {
     //     return $this->createQueryBuilder('e')
-    //         ->LeftJoin('e.progress', 'p')
-    //         ->addSelect('p')
-    //         ->andwhere('p.user = :val')
-    //         // ->andWhere('p.user = :val')
+    //         ->LeftJoin('e.goals', 'g')
+    //         ->addSelect('g')
+    //         ->where('g.user = :val')
     //         ->setParameter('val', $user)
-    //         // ->orderBy('p.date', 'DESC')
+    //         ->orderBy('e.id', 'ASC')
     //         ->getQuery()
     //         ->getResult();
     // }
+
+    public function getAllGoals($user)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $statement = $entityManager->getConnection()->prepare(
+
+            'SELECT e.id AS ID_exercise, g.id AS ID_goal, e.name, g.repetition, g.weight
+            FROM exercise AS e
+            LEFT JOIN goal  AS g
+            ON e.id = g.exercise_id
+            AND g.user_id = :val
+            ORDER BY ID_exercise ASC, g.id DESC');
+
+        $statement->execute([
+            'val' => $user->getId()
+        ]);
+        // returns an array of Product objects
+        return $statement->fetchAll();
+
+    }
 
 
 
