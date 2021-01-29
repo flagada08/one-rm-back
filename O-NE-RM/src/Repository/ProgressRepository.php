@@ -25,10 +25,12 @@ class ProgressRepository extends ServiceEntityRepository
     
     public function findByExercise($user)
     {
-        return $this->createQueryBuilder('progress')
-            ->Where('progress.user = :val')
+        return $this->createQueryBuilder('p')
+            ->Join('p.exercise', 'e')
+            ->addSelect('e')
+            ->andWhere('p.user = :val')
             ->setParameter('val', $user)
-            ->orderBy('progress.date', 'DESC')
+            ->orderBy('p.date', 'DESC')
             ->getQuery()
             ->getResult()
         ;
