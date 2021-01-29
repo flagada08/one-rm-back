@@ -66,9 +66,9 @@ class UserController extends AbstractController
     /**
      * Retourne un exercice en fonction de l'ID
      * 
-     * @Route("/api/user/{id}/workout/", name="test")
+     * @Route("/api/user/workout/{id}", name="test")
      */
-    public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository)
+    public function Oneworkout(Exercise $exercise, ExerciseRepository $exerciseRepository)
     {
         
         $currentExercise = $exerciseRepository->find($exercise);
@@ -77,7 +77,7 @@ class UserController extends AbstractController
         return $this->json($currentExercise);
 
     }  
-    
+
 
     // =============================== Partie Performances ================================================
 
@@ -86,16 +86,29 @@ class UserController extends AbstractController
      * 
      * @Route("/api/user/workout/{id}/recap", name="performances")
      */
-    public function performance(Exercise $exercise, ProgressRepository $progressRepository): Response        
+    public function performance(Exercise $exercise, ExerciseRepository $exerciseRepository): Response        
     {
+        $user = $this->getUser();
         
-        $currentPerformances = $progressRepository->findBy(
-            ['user' => $this->getuser() , 
-            'exercise' => $exercise]
-        ); 
+        $lastPerformance = $exerciseRepository->OneExerciseWithUserProgress($user, $exercise);
+
+        if($lastPerformance == []){
+
+            $lastPerformance['user_id']        = $user->getId();
+            $lastPerformance['ID_exercise']    = $exercise->getId();
+            $lastPerformance['name']           = $exercise->getName();
+            $lastPerformance['illustration']   = $exercise->getIllustration();
+            $lastPerformance['advice']         = $exercise->getAdvice();
+            $lastPerformance['difficulty']     = $exercise->getDifficulty();
+            $lastPerformance['ID_progress']    = null;
+            $lastPerformance['date']           = null;
+            $lastPerformance['repetition']     = null;
+            $lastPerformance['weight']         = null;
+
+        }
 
 
-        return $this->json($currentPerformances, Response::HTTP_OK, [], ['groups' => 'progressUser']);
+        return $this->json($lastPerformance, Response::HTTP_OK, [], ['groups' => 'progressUser']);
 
     }
     

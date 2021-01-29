@@ -35,7 +35,37 @@ class ExerciseRepository extends ServiceEntityRepository
     //         ->getQuery()
     //         ->getResult();
     // }
-    
+
+
+
+
+    public function OneExerciseWithUserProgress($user, $exercise)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $statement = $entityManager->getConnection()->prepare(
+
+            'SELECT e.id AS ID_exercise, p.id AS ID_progress, e.name, e.difficulty, e.advice, e.illustration, p.date, p.repetition, p.weight, p.user_id
+            FROM exercise AS e
+            LEFT JOIN progress  AS p
+            ON e.id = p.exercise_id
+            WHERE e.id = :val2
+            AND p.user_id = :val
+            ORDER BY ID_exercise ASC, p.date DESC');
+
+        $statement->execute([
+
+            'val2' => $exercise->getId(),
+            'val' => $user->getId()
+        ]);
+        // returns an array of Product objects
+        return $statement->fetchAll();
+
+    }
+
+    //SELECT * From exercise left join progress On exercise.id = progress.exercise_id WHERE progress.user_id = 1 AND exercise.id = 1
+    //SELECT * From exercise LEFT JOIN progress On exercise.id = progress.exercise_id AND progress.user_id = 1
+
     /**
      * Liste des exercices avec progres d'un utilisateur donné
      */
