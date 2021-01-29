@@ -73,7 +73,6 @@ class UserController extends AbstractController
         
         $currentExercise = $exerciseRepository->find($exercise);
 
-        dd($currentExercise);
         
         return $this->json($currentExercise);
 
@@ -83,7 +82,7 @@ class UserController extends AbstractController
     // =============================== Partie Performances ================================================
 
     /**
-     * Méthode permettant de retourner la liste des performances associées à un utilisateur et aux exercices
+     * Méthode permettant de retourner la liste des performances associées à un utilisateur et a un exercice
      * 
      * @Route("/api/user/workout/{id}/recap", name="performances")
      */
@@ -150,6 +149,9 @@ class UserController extends AbstractController
 
         $newPerformance = $serializer->deserialize($jsonContent, Progress::class, 'json');
 
+        $newPerformance->setExercise($exercise);
+
+
          //  On valide l'entité désérialisée
          $errors = $validator->validate($newPerformance);
 
@@ -168,7 +170,7 @@ class UserController extends AbstractController
          $entityManager->flush();
  
          // REST nous dit : status 201 + Location: movies/{id}
-         return $this->json(['message' => 'performance ajoutée en base'], Response::HTTP_CREATED);
+         return $this->json(['message' => 'performance ajoutée'], Response::HTTP_CREATED);
         
         
     }
