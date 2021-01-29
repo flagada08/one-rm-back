@@ -2,19 +2,49 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\User;
+use App\Repository\ProgressRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CoachController extends AbstractController
 {
     /**
-     * @Route("/coach", name="coach")
-     */
-    public function index(): Response
+     * @Route("/api/coach", name="coach")
+     */     
+    public function userList(UserRepository $userRepository): Response
     {
-        return $this->render('coach/index.html.twig', [
-            'controller_name' => 'CoachController',
-        ]);
+        $user = $this->getUser();
+
+        $fitnessRoom = $user->getFitnessroom();
+
+        $userList = $userRepository->findBy(['fitnessRoom' => $fitnessRoom]);
+        
+        return $this->json($userList, Response::HTTP_OK, [], ['groups' => 'listUsersFitnesstRoom']);
+
     }
+
+
+    /**
+     * @Route("/api/coach/user/{id}/performances", name="userToCoach")
+     */
+    public function getUserPerformances(User $user, UserRepository $userRepository, ProgressRepository $progressRepository) 
+    {
+
+        $userPerf = $progressRepository->findByExercise($user);
+        
+        return $this->json($userPerf, Response::HTTP_OK, [], ['groups' => 'progressUser']);
+        
+
+    }
+
+
+    //TODO coder la possibilité de rentrer dans un exercice de l'utilisateur afin de poster un commentaire
+
+
+
+    
 }
+

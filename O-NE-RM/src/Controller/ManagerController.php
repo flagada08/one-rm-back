@@ -66,7 +66,7 @@ class ManagerController extends AbstractController
     public function edit(EntityManagerInterface $entityManager, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
         $user = $this->getUser();
-        
+
         $jsonContent = $request->getContent();
 
         $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user]);
@@ -80,6 +80,8 @@ class ManagerController extends AbstractController
         $entityManager->flush();
 
         return $this->json(['message' => 'Informations utilisateur modifiées.'], Response::HTTP_OK);
+
+        //TODO a modifier
 
     }
 }

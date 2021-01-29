@@ -7,7 +7,6 @@ use App\Entity\User;
 use App\Entity\Exercise;
 use App\Entity\Goal;
 use App\Entity\Progress;
-use App\Repository\UserRepository;
 use App\Repository\ExerciseRepository;
 use App\Repository\GoalRepository;
 use App\Repository\ProgressRepository;
@@ -78,7 +77,7 @@ class UserController extends AbstractController
         
         return $this->json($currentExercise);
 
-    }    
+    }  
     
 
     // =============================== Partie Performances ================================================
@@ -86,13 +85,14 @@ class UserController extends AbstractController
     /**
      * Méthode permettant de retourner la liste des performances associées à un utilisateur et aux exercices
      * 
-     * @Route("/api/user/performances", name="performances")
+     * @Route("/api/user/workout/{id}/recap", name="performances")
      */
-    public function performance(ProgressRepository $progressRepository): Response        
+    public function performance(Exercise $exercise, ProgressRepository $progressRepository): Response        
     {
         
         $currentPerformances = $progressRepository->findBy(
-            ['user' => $this->getuser() ]
+            ['user' => $this->getuser() , 
+            'exercise' => $exercise]
         ); 
 
 
@@ -105,21 +105,22 @@ class UserController extends AbstractController
      * 
      * @Route("/api/user/getLastPerformances", name="getLastPerf")
      */
-    public function getLastPerformances(ProgressRepository $progressRepository)
+    public function getLastPerformances(ExerciseRepository $exerciseRepository)
     {
 
         //la custom query trie les objects progress par date 'DESC' du coup en evitant les doublons on s'assure de ne récuperer que la derniere performance en date
 
-        $lastPerformances = $progressRepository->findByExercise($this->getUser());
+        $lastPerformances = $exerciseRepository->ExerciseWithUserProgress($this->getUser());
+
 
         $lastPerfToSend = [];
         $checkExerciseID = [];
         
+
+        //Ici on boucle sur les resultats pour ne recuperer que la derniere performance en date d'un exercice pour eviter de se retrouver avec des doublons de performance
         foreach ($lastPerformances as $progress) {
 
-            $exercise = $progress->getExercise();
-
-            $exerciseID = $exercise->getId();
+            $exerciseID = $progress['ID_exercise'];
 
             if (!in_array($exerciseID, $checkExerciseID)) {
 
@@ -128,12 +129,10 @@ class UserController extends AbstractController
                 $lastPerfToSend[] = $progress;
             }
 
-            
         }
 
         return $this->json($lastPerfToSend, Response::HTTP_OK, [], ['groups' => 'progressUser']);
 
-        //TODO modifier la customQuery pour reussir a ne renvoyer que la derniere performance en date
 
     }
     
@@ -142,7 +141,7 @@ class UserController extends AbstractController
     /**
      * Méthode permettant d'ajouter une nouvelle performance en BDD
      * 
-     * @Route("/api/user/{id}/workout/newPerf", name="newPerformance", methods={"POST"})
+     * @Route("/api/user/workout/{id}/newPerf", name="newPerformance", methods={"POST"})
      */
     public function newPerf(Exercise $exercise, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
