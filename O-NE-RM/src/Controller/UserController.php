@@ -9,7 +9,6 @@ use App\Entity\Goal;
 use App\Entity\Progress;
 use App\Repository\ExerciseRepository;
 use App\Repository\GoalRepository;
-use App\Repository\ProgressRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +18,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+
 
 class UserController extends AbstractController
 {
@@ -74,7 +73,7 @@ class UserController extends AbstractController
         $currentExercise = $exerciseRepository->find($exercise);
 
         
-        return $this->json($currentExercise);
+        return $this->json($currentExercise, Response::HTTP_OK, [], ['groups' => 'workout_get']);
 
     }  
 
