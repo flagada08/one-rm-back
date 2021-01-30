@@ -9,7 +9,6 @@ use App\Entity\Goal;
 use App\Entity\Progress;
 use App\Repository\ExerciseRepository;
 use App\Repository\GoalRepository;
-use App\Repository\ProgressRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +18,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+
 
 class UserController extends AbstractController
 {
@@ -66,18 +65,18 @@ class UserController extends AbstractController
     /**
      * Retourne un exercice en fonction de l'ID
      * 
-     * @Route("/api/user/{id}/workout/", name="test")
+     * @Route("/api/user/workout/{id}", name="test")
      */
-    public function workout(Exercise $exercise, ExerciseRepository $exerciseRepository)
+    public function Oneworkout(Exercise $exercise, ExerciseRepository $exerciseRepository)
     {
         
         $currentExercise = $exerciseRepository->find($exercise);
 
         
-        return $this->json($currentExercise);
+        return $this->json($currentExercise, Response::HTTP_OK, [], ['groups' => 'workout_get']);
 
     }  
-    
+
 
     // =============================== Partie Performances ================================================
 
@@ -86,16 +85,29 @@ class UserController extends AbstractController
      * 
      * @Route("/api/user/workout/{id}/recap", name="performances")
      */
-    public function performance(Exercise $exercise, ProgressRepository $progressRepository): Response        
+    public function performance(Exercise $exercise, ExerciseRepository $exerciseRepository): Response        
     {
+        $user = $this->getUser();
         
-        $currentPerformances = $progressRepository->findBy(
-            ['user' => $this->getuser() , 
-            'exercise' => $exercise]
-        ); 
+        $lastPerformance = $exerciseRepository->OneExerciseWithUserProgress($user, $exercise);
+
+        if($lastPerformance == []){
+
+            $lastPerformance['user_id']        = $user->getId();
+            $lastPerformance['ID_exercise']    = $exercise->getId();
+            $lastPerformance['name']           = $exercise->getName();
+            $lastPerformance['illustration']   = $exercise->getIllustration();
+            $lastPerformance['advice']         = $exercise->getAdvice();
+            $lastPerformance['difficulty']     = $exercise->getDifficulty();
+            $lastPerformance['ID_progress']    = null;
+            $lastPerformance['date']           = null;
+            $lastPerformance['repetition']     = null;
+            $lastPerformance['weight']         = null;
+
+        }
 
 
-        return $this->json($currentPerformances, Response::HTTP_OK, [], ['groups' => 'progressUser']);
+        return $this->json($lastPerformance, Response::HTTP_OK, [], ['groups' => 'progressUser']);
 
     }
     
@@ -109,28 +121,28 @@ class UserController extends AbstractController
 
         //la custom query trie les objects progress par date 'DESC' du coup en evitant les doublons on s'assure de ne récuperer que la derniere performance en date
 
-        $lastPerformances = $exerciseRepository->ExerciseWithUserProgress($this->getUser());
+        $lastPerformancesAndGoals = $exerciseRepository->ExerciseWithUserProgressAndGoals($this->getUser());
+        
 
-
-        $lastPerfToSend = [];
+        $lastPerfAndGoalToSend = [];
         $checkExerciseID = [];
         
 
         //Ici on boucle sur les resultats pour ne recuperer que la derniere performance en date d'un exercice pour eviter de se retrouver avec des doublons de performance
-        foreach ($lastPerformances as $progress) {
+        foreach ($lastPerformancesAndGoals as $last) {
 
-            $exerciseID = $progress['ID_exercise'];
+            $exerciseID = $last['ID_exercise'];
 
             if (!in_array($exerciseID, $checkExerciseID)) {
 
                 $checkExerciseID[] = $exerciseID;
 
-                $lastPerfToSend[] = $progress;
+                $lastPerfAndGoalToSend[] = $last;
             }
 
         }
 
-        return $this->json($lastPerfToSend, Response::HTTP_OK, [], ['groups' => 'progressUser']);
+        return $this->json($lastPerfAndGoalToSend, Response::HTTP_OK, [], ['groups' => 'progressUser']);
 
 
     }
@@ -178,16 +190,34 @@ class UserController extends AbstractController
     // =============================== Partie Objectifs ================================================
 
     /**
-     * Méthode permettant de récupérer tous les objectifs d'un utilisateur (tous exercices confondus)
+     * Méthode permettant de récupérer les derniers objectifs d'un utilisateur (tous exercices confondus)
      * 
-     * @Route("/api/user/{id}/workout/allgoals", name="allgoals")
+     * @Route("/api/user/getGoals", name="allgoals")
      */
-    public function getAllGoals(User $user, GoalRepository $goal)
+    public function getLastGoals(ExerciseRepository $exerciseRepository)
     {
-        $goalList = $goal->findBy(['user' => $user]);
+        
+        $goalList = $exerciseRepository->getAllGoals($this->getUser());
 
+        $lastGoalsToSend = [];
+        $checkExerciseID = [];
+        
 
-        return $this->json($goalList, Response::HTTP_OK,[], ['groups' => 'goals_get']);
+        //Ici on boucle sur les resultats pour ne recuperer que la derniere performance en date d'un exercice pour eviter de se retrouver avec des doublons de performance
+        foreach ($goalList as $goal) {
+
+            $exerciseID = $goal['ID_exercise'];
+
+            if (!in_array($exerciseID, $checkExerciseID)) {
+
+                $checkExerciseID[] = $exerciseID;
+
+                $lastGoalsToSend[] = $goal;
+            }
+
+        }
+
+        return $this->json($lastGoalsToSend, Response::HTTP_OK,[], ['groups' => 'goals_get']);
     }
 
     /**

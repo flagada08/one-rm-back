@@ -21,7 +21,6 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @Groups("infos")
      * @Groups("progress_get")
-     * @Groups("goals_get")
      * @Groups("listUsersFitnesstRoom")
      */
     private $id;
@@ -61,7 +60,6 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=50)
      * @Groups("infos")
      * @Groups("progress_get")
-     * @Groups("goals_get")
      * @Groups("listUsersFitnesstRoom")
      */
     private $firstname;
@@ -70,7 +68,6 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=70)
      * @Groups("infos")
      * @Groups("progress_get")
-     * @Groups("goals_get")
      * @Groups("listUsersFitnesstRoom")
      */
     private $lastname;

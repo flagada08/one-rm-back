@@ -58,12 +58,12 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
 
-        - { path: ^/api/back,  roles: ROLE_MANAGER }
+        - { path: ^/api/back/manager/fitnessroom,  roles: ROLE_MANAGER }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/user,  roles: IS_AUTHENTICATED_FULLY }
 
     role_hierarchy:
         # Ici, ROLE_ADMIN hérite du rôle ROLE_MANAGER
-        ROLE_ADMIN:   [ROLE_MANAGER, ROLE_COACH, ROLE_USER]
-        ROLE_MANAGER: [ROLE_COACH, ROLE_USER]
-        ROLE_COACH:   [ROLE_USER]
+        # ROLE_ADMIN:   [ROLE_MANAGER, ROLE_COACH, ROLE_USER]
+        # ROLE_MANAGER: [ROLE_COACH, ROLE_USER]
+        # ROLE_COACH:   [ROLE_USER]
