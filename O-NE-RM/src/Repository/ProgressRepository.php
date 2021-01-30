@@ -23,14 +23,15 @@ class ProgressRepository extends ServiceEntityRepository
      * @return Progress[] Returns an array of Progress objects
      */
     
-    public function findByExercise($user)
+    public function getLastProgress($user)
     {
         return $this->createQueryBuilder('p')
-            ->Join('p.exercise', 'e')
+            ->leftJoin('p.exercise', 'e')
             ->addSelect('e')
             ->andWhere('p.user = :val')
             ->setParameter('val', $user)
-            ->orderBy('p.date', 'DESC')
+            ->OrderBy('e.id')
+            ->addorderBy('p.date', 'DESC')
             ->getQuery()
             ->getResult()
         ;

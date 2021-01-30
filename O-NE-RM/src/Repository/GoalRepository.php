@@ -23,7 +23,7 @@ class GoalRepository extends ServiceEntityRepository
     //  * @return Goal[] Returns an array of Goal objects
     //  */
     
-    public function getAllGoals($user)
+    public function getLastGoal($user)
     {
         return $this->createQueryBuilder('g')
             ->LeftJoin('g.exercise' , 'e')

@@ -35,6 +35,26 @@ class ExerciseRepository extends ServiceEntityRepository
     //         ->getResult();
     // }
 
+    // public function getLastGoal($user)
+    // {
+    //     return $this->createQueryBuilder('e')
+    //         ->LeftJoin('e.goals', 'g')
+    //         ->addSelect('g')
+    //         ->where('g.user = :val')
+    //         ->setParameter('val', $user)
+    //         ->orderBy('e.id', 'ASC')
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+    public function getLastPerf($user)
+    {
+
+    }
+
+    
+
+
     public function getAllGoals($user)
     {
         $entityManager = $this->getEntityManager();
@@ -90,18 +110,21 @@ class ExerciseRepository extends ServiceEntityRepository
      * Liste des exercices avec progres d'un utilisateur donné
      */
     
-    public function ExerciseWithUserProgress($user)
+    public function ExerciseWithUserProgressAndGoals($user)
     {
         $entityManager = $this->getEntityManager();
 
         $statement = $entityManager->getConnection()->prepare(
 
-            'SELECT e.id AS ID_exercise, p.id AS ID_progress, e.name, p.date, p.repetition, p.weight, p.user_id
+            'SELECT e.id AS ID_exercise, p.id AS ID_progress, g.id AS ID_goal, g.weight AS goal_weight, g.repetition AS goal_repetition, e.name, p.date, p.repetition AS progress_repetition, p.weight AS progress_weight, p.user_id
             FROM exercise AS e
-            LEFT JOIN progress  AS p
+            LEFT JOIN goal  AS g
+            ON e.id = g.exercise_id
+            AND g.user_id = :val
+            LEFT JOIN progress as p
             ON e.id = p.exercise_id
             AND p.user_id = :val
-            ORDER BY ID_exercise ASC, p.date DESC');
+            ORDER BY ID_exercise ASC, p.id DESC, g.id DESC');
 
         $statement->execute([
             'val' => $user->getId()
@@ -110,8 +133,6 @@ class ExerciseRepository extends ServiceEntityRepository
         return $statement->fetchAll();
 
     }
-
-    // Select * from exercise Left Join progress on exercise.id = progress.exercise_id and progress.user_id = 1
 
 
     /*

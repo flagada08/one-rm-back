@@ -121,28 +121,28 @@ class UserController extends AbstractController
 
         //la custom query trie les objects progress par date 'DESC' du coup en evitant les doublons on s'assure de ne récuperer que la derniere performance en date
 
-        $lastPerformances = $exerciseRepository->ExerciseWithUserProgress($this->getUser());
+        $lastPerformancesAndGoals = $exerciseRepository->ExerciseWithUserProgressAndGoals($this->getUser());
+        
 
-
-        $lastPerfToSend = [];
+        $lastPerfAndGoalToSend = [];
         $checkExerciseID = [];
         
 
         //Ici on boucle sur les resultats pour ne recuperer que la derniere performance en date d'un exercice pour eviter de se retrouver avec des doublons de performance
-        foreach ($lastPerformances as $progress) {
+        foreach ($lastPerformancesAndGoals as $last) {
 
-            $exerciseID = $progress['ID_exercise'];
+            $exerciseID = $last['ID_exercise'];
 
             if (!in_array($exerciseID, $checkExerciseID)) {
 
                 $checkExerciseID[] = $exerciseID;
 
-                $lastPerfToSend[] = $progress;
+                $lastPerfAndGoalToSend[] = $last;
             }
 
         }
 
-        return $this->json($lastPerfToSend, Response::HTTP_OK, [], ['groups' => 'progressUser']);
+        return $this->json($lastPerfAndGoalToSend, Response::HTTP_OK, [], ['groups' => 'progressUser']);
 
 
     }
@@ -216,7 +216,6 @@ class UserController extends AbstractController
             }
 
         }
-
 
         return $this->json($lastGoalsToSend, Response::HTTP_OK,[], ['groups' => 'goals_get']);
     }
