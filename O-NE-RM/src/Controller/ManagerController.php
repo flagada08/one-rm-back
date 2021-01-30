@@ -18,7 +18,7 @@ class ManagerController extends AbstractController
     /**
      * Méthode qui permet de gérer les demandes d'ouvertures de salle = création d'une salle en BDD.
      *
-     * @Route("api/back/admin/fitnessroom_add", name="roomrequest", methods={"POST","PUT","PATCH"})
+     * @Route("api/back/manager/fitnessroom_add", name="roomrequest", methods={"POST","PUT","PATCH"})
      */
     public function newFitnessRoom(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager): Response
     {
@@ -44,7 +44,7 @@ class ManagerController extends AbstractController
     /**
      * Liste des membres par salle de sport
      *
-     * @Route("api/back/manager/fitnessroom", name="allusers")
+     * @Route("/api/back/manager", name="allusers")
      *
      */
     public function userList(UserRepository $userRepository): Response
