@@ -49,9 +49,9 @@ class ExerciseFixtures extends Fixture
 
             $exercise = new Exercise();
 
-            $exercise->setName($provider->ExerciseName($i));
+            $exercise->setName($provider->exerciseName($i));
             $exercise->setDifficulty($provider->difficulty($i));
-            $exercise->setIllustration('toto'.$i.'.png');
+            $exercise->setIllustration($provider->illustration($i));
             $exercise->setAdvice($provider->advice($i));
 
             $manager->persist($exercise);

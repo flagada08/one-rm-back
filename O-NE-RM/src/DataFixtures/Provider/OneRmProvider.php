@@ -118,11 +118,18 @@ class OneRmProvider
     /**
      * Retourne un exercice
      */
-    public function ExerciseName($i)
+    public function exerciseName($i)
     {
         return $this->ExerciseName[$i];
     }
 
+    /**
+     * Retourne l'illustration de l'exercice
+     */
+    public function illustration($i)
+    {
+        return $this->ExerciseIllustration[$i];
+    }
     /**
      * Retourne une diffculté
      */
