@@ -8,7 +8,7 @@ use App\Entity\Exercise;
 use App\Entity\Goal;
 use App\Entity\Progress;
 use App\Repository\ExerciseRepository;
-use App\Repository\GoalRepository;
+use App\Repository\FitnessRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,11 +41,15 @@ class UserController extends AbstractController
      * 
      * @Route("/api/user/{id}/edit", name="user", methods={"PUT","PATCH"})
      */
-    public function edit(User $user, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
+    public function edit(User $user, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder ): Response
     {
         $jsonContent = $request->getContent();
 
         $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user] );
+
+        $passwordHashed = $encoder->encodePassword($user, $user->getPassword());
+
+        $user->setPassword($passwordHashed);
 
         $error = $validator->validate($user);
 
@@ -59,6 +63,72 @@ class UserController extends AbstractController
 
         return $this->json(['message' => 'User modifié.'], Response::HTTP_OK);
     }
+
+    /**
+     * Méthode permettant de créer un utilisateur en BDD
+     * 
+     * @Route("/register", name="register", methods={"POST"})
+     */
+    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder, FitnessRoomRepository $fitnessRoomRepository ) 
+    {
+        // On recupere le contenu de la requete
+        $jsonContent = $request->getContent();
+
+        
+        // $user = $serializer->deserialize($jsonContent, User::class, 'json', ["json_decode_options" => \JSON_OBJECT_AS_ARRAY] ); ==> a voir comment faire
+
+        // ON recupere dans un tableau associatif tout le contenu JSON afin de recuperer le mot de passe de la salle transmis dans le formulaire vu qu'on ne pouvait pas le récuperer avec le deserializer
+        $associativeArray = json_decode($jsonContent, true);
+
+        // Maintenant qu'on a stocké le tableau associatif dans $associativeArray on peut deserializer (le deserializeur va ignorer le champ fitnessRomm_Password du JSON)
+        $user = $serializer->deserialize($jsonContent, User::class, 'json' );
+
+        // On recuperer le mot de passe du formulaire
+        $fitnessRoomPasswordToCheck = $associativeArray['fitnessRoom_Password'];
+
+        // On recupere les infos de la salle séléctionnée
+        $fitnessRoom = $fitnessRoomRepository->find($user->getFitnessRoom());
+
+        // On recupere le mot de passe
+        $goodFitnessRoomPassword = $fitnessRoom->getPassword();
+
+        //On compare le mot de passe transmis avec le mot de passe en base => si pas ok on retourne une erreur sinon ok
+        if(!password_verify($fitnessRoomPasswordToCheck,$goodFitnessRoomPassword)){
+
+            return $this->json('Le mot de passe de la salle est incorrect');
+
+        }
+
+
+        $passwordToHash = $user->getPassword();
+
+        $passwordEncoded = $encoder->encodePassword($user, $passwordToHash);
+
+        $user->setPassword($passwordEncoded);
+
+
+        //  On valide l'entité désérialisée
+        $errors = $validator->validate($user);
+
+        // Si nombre d'erreur > 0 alors on renvoie une erreur
+        if (count($errors) > 0) {
+
+            // On retourne le tableau d'erreurs en Json au front avec un status code 422
+            return $this->json('ca marche pas', Response::HTTP_UNPROCESSABLE_ENTITY);
+            
+        }
+        
+        // On persiste les données
+        $entityManager->persist($user);
+
+        // On flush pour enregistrer en BDD
+        $entityManager->flush();
+
+        // REST nous dit : status 201 + Location: movies/{id}
+        return $this->json(['message' => 'utilisateur crée'], Response::HTTP_CREATED);
+
+    }
+
 
     // =============================== Partie Execices ================================================
     
@@ -263,47 +333,6 @@ class UserController extends AbstractController
         //TODO a checker et a modifier pour put et patch
     }
 
-    /**
-     * Méthode permettant de créer un utilisateur en BDD
-     * 
-     * @Route("/register", name="register", methods={"POST"})
-     */
-    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder) 
-    {
-
-        $jsonContent = $request->getContent();
-        
-        
-        $user = $serializer->deserialize($jsonContent, User::class, 'json' );
-
-        $passwordToHash = $user->getPassword();
-
-        $passwordEncoded = $encoder->encodePassword($user, $passwordToHash);
-
-        $user->setPassword($passwordEncoded);
-
-
-        //  On valide l'entité désérialisée
-        $errors = $validator->validate($user);
-
-        // Si nombre d'erreur > 0 alors on renvoie une erreur
-        if (count($errors) > 0) {
-
-            // On retourne le tableau d'erreurs en Json au front avec un status code 422
-            return $this->json('ca marche pas', Response::HTTP_UNPROCESSABLE_ENTITY);
-            
-        }
-        
-        // On persiste les données
-        $entityManager->persist($user);
-
-        // On flush pour enregistrer en BDD
-        $entityManager->flush();
-
-        // REST nous dit : status 201 + Location: movies/{id}
-        return $this->json(['message' => 'utilisateur crée'], Response::HTTP_CREATED);
-
-    }
 
 
 }

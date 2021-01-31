@@ -6,18 +6,24 @@ use App\Entity\FitnessRoom;
 use Doctrine\DBAL\Connection;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
-class FitnessRoomFixtures extends Fixture
+class FitnessRoomFixtures extends Fixture 
 {
 
     private $passwordEncoder;
 
-
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+   
+    public function __construct()
     {
-        $this->passwordEncoder = $passwordEncoder;
+        
     }
+
+    public function PasswordHash($PasswordToHash)
+    {
+        return password_hash($PasswordToHash, PASSWORD_ARGON2I );
+    }
+
 
     private function truncate(Connection $connection)
     {
@@ -46,7 +52,7 @@ class FitnessRoomFixtures extends Fixture
             $fitnessRoom = new FitnessRoom();
 
             $fitnessRoom->setName('salle' . $i);
-            $fitnessRoom->setPassword('salle' . $i);
+            $fitnessRoom->setPassword($this->PasswordHash('salle' . $i));
 
             $manager->persist($fitnessRoom);
         }
