@@ -1,23 +1,16 @@
 <?php
 
 namespace App\DataFixtures;
-
-use App\Entity\User;
 use App\Entity\Comment;
-use App\Entity\Exercise;
 use App\Entity\Progress;
-use App\Entity\FitnessRoom;
 use Doctrine\DBAL\Connection;
 use App\Repository\UserRepository;
 use App\Repository\ExerciseRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use App\DataFixtures\Provider\OneRmProvider;
 use App\Entity\Goal;
-use DateTime;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 
 class AppFixtures extends Fixture implements DependentFixtureInterface

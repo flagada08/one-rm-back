@@ -8,7 +8,7 @@ use App\Entity\Exercise;
 use App\Entity\Goal;
 use App\Entity\Progress;
 use App\Repository\ExerciseRepository;
-use App\Repository\GoalRepository;
+use App\Repository\FitnessRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,13 +69,36 @@ class UserController extends AbstractController
      * 
      * @Route("/register", name="register", methods={"POST"})
      */
-    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder) 
+    public function create(EntityManagerInterface $entityManager, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder, FitnessRoomRepository $fitnessRoomRepository ) 
     {
-
+        // On recupere le contenu de la requete
         $jsonContent = $request->getContent();
+
         
-        
+        // $user = $serializer->deserialize($jsonContent, User::class, 'json', ["json_decode_options" => \JSON_OBJECT_AS_ARRAY] ); ==> a voir comment faire
+
+        // ON recupere dans un tableau associatif tout le contenu JSON afin de recuperer le mot de passe de la salle transmis dans le formulaire vu qu'on ne pouvait pas le récuperer avec le deserializer
+        $associativeArray = json_decode($jsonContent, true);
+
+        // Maintenant qu'on a stocké le tableau associatif dans $associativeArray on peut deserializer (le deserializeur va ignorer le champ fitnessRomm_Password du JSON)
         $user = $serializer->deserialize($jsonContent, User::class, 'json' );
+
+        // On recuperer le mot de passe du formulaire
+        $fitnessRoomPasswordToCheck = $associativeArray['fitnessRoom_Password'];
+
+        // On recupere les infos de la salle séléctionnée
+        $fitnessRoom = $fitnessRoomRepository->find($user->getFitnessRoom());
+
+        // On recupere le mot de passe
+        $goodFitnessRoomPassword = $fitnessRoom->getPassword();
+
+        //On compare le mot de passe transmis avec le mot de passe en base => si pas ok on retourne une erreur sinon ok
+        if(!password_verify($fitnessRoomPasswordToCheck,$goodFitnessRoomPassword)){
+
+            return $this->json('Le mot de passe de la salle est incorrect');
+
+        }
+
 
         $passwordToHash = $user->getPassword();
 
