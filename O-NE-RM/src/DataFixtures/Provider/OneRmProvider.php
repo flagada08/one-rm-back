@@ -37,7 +37,27 @@ class OneRmProvider
         'Push-up',
         'Hand-stand push-up',
         'Wall-ball',
-        'Kettlebell-swing',
+    ];
+
+    private $ExerciseIllustration = [
+        
+        'clean-and-jerk.jpg',
+        'deadlift.jpeg',
+        'sumo-deadlift.png',
+        'front-squat.jpg',
+        'back-squat.jpg',
+        'strictpress.jpg',
+        'overhead-squat.jpg',
+        'power-clean.jpg',
+        'push-press.jpg',
+        'snatch.jpeg',
+        'squat-clean.jpeg',
+        'butterfly-pull-up.jpg',
+        'sit-up.jpg',
+        'push-up.jpg',
+        'hand-stand-push-up.jpg',
+        'wall-ball.jpg',
+
     ];
 
     // Difficulté des exercices
@@ -60,6 +80,7 @@ class OneRmProvider
         '1',
         '1',
     ];
+
 
     //Conseils de realisation
     private $advice = [

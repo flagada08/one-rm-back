@@ -66,8 +66,8 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             
 
             $progress->setDate(new \DateTime());
-            $progress->setRepetition(mt_rand(1,50));
-            $progress->setWeight(mt_rand(1,200));
+            $progress->setRepetition(mt_rand(1,30));
+            $progress->setWeight(mt_rand(1,150));
             $progress->setUser($this->userRepository->find(mt_rand(1,9)));
             $progress->setExercise($this->exerciseRepository->find(mt_rand(1,16)));
 
@@ -99,7 +99,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $goal = new Goal();
             
 
-            $goal->setRepetition(mt_rand(1,50));
+            $goal->setRepetition(mt_rand(1,90));
             $goal->setWeight(mt_rand(1,200));
             $goal->setUser($this->userRepository->find(mt_rand(1,9)));
             $goal->setExercise($this->exerciseRepository->find(mt_rand(1,16)));
