@@ -355,6 +355,8 @@ class UserController extends AbstractController
         //TODO a checker et a modifier pour put et patch
     }
 
-
+    /**
+     * Méthode qui permet de récuperer les commentaires
+     */
 
 }
