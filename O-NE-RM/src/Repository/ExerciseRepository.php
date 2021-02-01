@@ -91,7 +91,7 @@ class ExerciseRepository extends ServiceEntityRepository
             ON e.id = p.exercise_id
             WHERE e.id = :val2
             AND p.user_id = :val
-            ORDER BY ID_exercise ASC, p.date DESC');
+            ORDER BY ID_exercise ASC, p.date ASC');
 
         $statement->execute([
 
@@ -102,6 +102,7 @@ class ExerciseRepository extends ServiceEntityRepository
         return $statement->fetchAll();
 
     }
+
 
     //SELECT * From exercise left join progress On exercise.id = progress.exercise_id WHERE progress.user_id = 1 AND exercise.id = 1
     //SELECT * From exercise LEFT JOIN progress On exercise.id = progress.exercise_id AND progress.user_id = 1

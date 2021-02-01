@@ -30,8 +30,13 @@ class CoachController extends AbstractController
     /**
      * @Route("/api/coach/user/{id}/performances", name="userToCoach")
      */
-    public function getUserPerformances(User $user, UserRepository $userRepository, ProgressRepository $progressRepository) 
+    public function getUserPerformances(User $user = null, ProgressRepository $progressRepository) 
     {
+
+        if ($user == null) {
+
+            throw $this->createNotFoundException('utilisateur non trouvé.');
+        }
 
         $userPerf = $progressRepository->findByExercise($user);
         
