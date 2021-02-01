@@ -11,13 +11,6 @@ use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 class FitnessRoomFixtures extends Fixture 
 {
 
-    private $passwordEncoder;
-
-   
-    public function __construct()
-    {
-        
-    }
 
     public function PasswordHash($PasswordToHash)
     {
