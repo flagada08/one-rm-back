@@ -10,6 +10,7 @@ use App\Entity\Progress;
 use App\Repository\ExerciseRepository;
 use App\Repository\FitnessRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,8 +42,13 @@ class UserController extends AbstractController
      * 
      * @Route("/api/user/{id}/edit", name="user", methods={"PUT","PATCH"})
      */
-    public function edit(User $user, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder ): Response
+    public function edit(User $user = null, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder ): Response
     {
+        if ($user == null) {
+
+            throw $this->createNotFoundException('utilisateur non trouvé');
+        }
+
         $jsonContent = $request->getContent();
 
         $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user] );
@@ -137,9 +143,14 @@ class UserController extends AbstractController
      * 
      * @Route("/api/user/workout/{id}", name="test")
      */
-    public function Oneworkout(Exercise $exercise, ExerciseRepository $exerciseRepository)
+    public function Oneworkout(Exercise $exercise = null, ExerciseRepository $exerciseRepository)
     {
         
+        if ($exercise == null) {
+
+            throw $this->createNotFoundException('exercice non trouvé.');
+        }
+
         $currentExercise = $exerciseRepository->find($exercise);
 
         
@@ -155,8 +166,14 @@ class UserController extends AbstractController
      * 
      * @Route("/api/user/workout/{id}/recap", name="performances")
      */
-    public function performance(Exercise $exercise, ExerciseRepository $exerciseRepository): Response        
+    public function performance(Exercise $exercise = null, ExerciseRepository $exerciseRepository): Response        
     {
+
+        if ($exercise == null) {
+
+            throw $this->createNotFoundException('exercice non trouvé.');
+        }
+
         $user = $this->getUser();
         
         $lastPerformance = $exerciseRepository->OneExerciseWithUserProgress($user, $exercise);
@@ -224,8 +241,13 @@ class UserController extends AbstractController
      * 
      * @Route("/api/user/workout/{id}/newPerf", name="newPerformance", methods={"POST"})
      */
-    public function newPerf(Exercise $exercise, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
+    public function newPerf(Exercise $exercise = null, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
+
+        if ($exercise == null) {
+
+            throw $this->createNotFoundException('exercice non trouvé.');
+        }
 
         $jsonContent = $request->getContent();
 

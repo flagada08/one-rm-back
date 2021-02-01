@@ -64,8 +64,14 @@ class ManagerController extends AbstractController
      *
      * @Route("/api/back/manager/user/{id}/edit", name="user_edit", methods={"PATCH"})
      */
-    public function edit(User $user, EntityManagerInterface $entityManager, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
+    public function edit(User $user = null, EntityManagerInterface $entityManager, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
+
+        if ($user == null) {
+
+            throw $this->createNotFoundException('utilisateur non trouvé.');
+        }
+
         $jsonContent = $request->getContent();
 
         $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user] );
@@ -91,8 +97,13 @@ class ManagerController extends AbstractController
      * @Route("api/back/manager/user/{id}/delete", name="delete_user", methods = {"DELETE"})
      *
      */
-    public function userDelete(User $user, EntityManagerInterface $entityManager): Response
+    public function userDelete(User $user = null, EntityManagerInterface $entityManager): Response
     {
+
+        if ($user == null) {
+
+            throw $this->createNotFoundException('utilisateur non trouvé.');
+        }
 
         $entityManager->remove($user);
 
