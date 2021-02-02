@@ -25,9 +25,9 @@ class HomeController extends AbstractController
     }
 
     /**
-     * Undocumented function
+     * Méthode renvoyant la liste des salles de sport pour le select du formulaire d'inscription
      *
-     * @Route("/api/getFitnessRoomList", name="getFitnessRoomList")
+     * @Route("/getFitnessRoomList", name="getFitnessRoomList")
      */
     public function fitnessRoomList(FitnessRoomRepository $fitnessRoomRepository) {
 

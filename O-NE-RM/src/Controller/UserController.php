@@ -91,10 +91,10 @@ class UserController extends AbstractController
         $user = $serializer->deserialize($jsonContent, User::class, 'json' );
 
 
-        if (!empty($associativeArray['fitnessRoom'])) {
+        if (!empty($associativeArray['fitnessRoom']) && $associativeArray['fitnessRoom'] !== '' ) {
 
 
-            if (!empty($associativeArray['fitnessRoom_Password'])) {
+            if (!empty($associativeArray['fitnessRoom_Password']) && $associativeArray['fitnessRoom_Password'] !== '' ) {
     
                 $fitnessRoomPasswordToCheck = $associativeArray['fitnessRoom_Password'];
         
@@ -107,14 +107,15 @@ class UserController extends AbstractController
                 //On compare le mot de passe transmis avec le mot de passe en base => si pas ok on retourne une erreur sinon ok
                 if(!password_verify($fitnessRoomPasswordToCheck,$goodFitnessRoomPassword)){
         
-                    return $this->json('Le mot de passe de la salle est incorrect');
+                    return $this->json('Le mot de passe de la salle est incorrect', Response::HTTP_NOT_ACCEPTABLE);
         
                 }
+
             }
             else {
 
-                return $this->json('veuillez entrer un mot de passe pour vous affilier à cette salle');
-
+                return $this->json('veuillez entrer un mot de passe pour vous affilier à cette salle', Response::HTTP_NOT_ACCEPTABLE);
+                
             }
 
 
