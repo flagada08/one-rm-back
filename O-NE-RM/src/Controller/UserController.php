@@ -90,22 +90,37 @@ class UserController extends AbstractController
         // Maintenant qu'on a stocké le tableau associatif dans $associativeArray on peut deserializer (le deserializeur va ignorer le champ fitnessRomm_Password du JSON)
         $user = $serializer->deserialize($jsonContent, User::class, 'json' );
 
-        // On recuperer le mot de passe du formulaire
-        $fitnessRoomPasswordToCheck = $associativeArray['fitnessRoom_Password'];
 
-        // On recupere les infos de la salle séléctionnée
-        $fitnessRoom = $fitnessRoomRepository->find($user->getFitnessRoom());
+        if (!empty($associativeArray['fitnessRoom'])) {
 
-        // On recupere le mot de passe
-        $goodFitnessRoomPassword = $fitnessRoom->getPassword();
 
-        //On compare le mot de passe transmis avec le mot de passe en base => si pas ok on retourne une erreur sinon ok
-        if(!password_verify($fitnessRoomPasswordToCheck,$goodFitnessRoomPassword)){
+            if (!empty($associativeArray['fitnessRoom_Password'])) {
+    
+                $fitnessRoomPasswordToCheck = $associativeArray['fitnessRoom_Password'];
+        
+                // On recupere les infos de la salle séléctionnée
+                $fitnessRoom = $fitnessRoomRepository->find($user->getFitnessRoom());
+        
+                // On recupere le mot de passe
+                $goodFitnessRoomPassword = $fitnessRoom->getPassword();
+        
+                //On compare le mot de passe transmis avec le mot de passe en base => si pas ok on retourne une erreur sinon ok
+                if(!password_verify($fitnessRoomPasswordToCheck,$goodFitnessRoomPassword)){
+        
+                    return $this->json('Le mot de passe de la salle est incorrect');
+        
+                }
+            }
+            else {
 
-            return $this->json('Le mot de passe de la salle est incorrect');
+                return $this->json('veuillez entrer un mot de passe pour vous affilier à cette salle');
+
+            }
+
 
         }
 
+        // On recuperer le mot de passe du formulaire
 
         $passwordToHash = $user->getPassword();
 

@@ -158,7 +158,7 @@ class CoachController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json($comment , Response::HTTP_CREATED);
+        return $this->json('coaching a bien été envoyé' , Response::HTTP_CREATED);
 
     }
     
