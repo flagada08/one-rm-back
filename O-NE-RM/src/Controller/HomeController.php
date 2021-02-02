@@ -33,7 +33,7 @@ class HomeController extends AbstractController
 
         $fitnessRoomList = $fitnessRoomRepository->findAll();
 
-        return $this->json($fitnessRoomList, Response::HTTP_OK, [], ['groups' => 'fitnessRoom_get'])
+        return $this->json($fitnessRoomList, Response::HTTP_OK, [], ['groups' => 'fitnessRoom_get']);
 
     }
 
