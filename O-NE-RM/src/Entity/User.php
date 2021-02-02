@@ -22,6 +22,7 @@ class User implements UserInterface
      * @Groups("infos")
      * @Groups("progress_get")
      * @Groups("listUsersFitnesstRoom")
+     * @Groups("comment_get")
      */
     private $id;
 

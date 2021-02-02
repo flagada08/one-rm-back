@@ -22,6 +22,7 @@ class Exercise
      * @Groups("progress_get")
      * @Groups("goals_get")
      * @Groups("progressUser")
+     * @Groups("comment_get")
      */
     private $id;
 

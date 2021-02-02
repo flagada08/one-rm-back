@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Exercise;
 use App\Entity\Goal;
 use App\Entity\Progress;
+use App\Repository\CommentRepository;
 use App\Repository\ExerciseRepository;
 use App\Repository\FitnessRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -355,8 +356,33 @@ class UserController extends AbstractController
         //TODO a checker et a modifier pour put et patch
     }
 
+    // =============================== Partie Commentaires ================================================
+
     /**
-     * Méthode qui permet de récuperer les commentaires
+     * Méthode qui permet de récuperer les commentaires lié à un utilisateur et un exercice
+     * 
+     * @Route("/api/user/{id}/workout/getComment", name="getComment", methods={"GET", "POST"})
      */
+    public function getComment(User $user = null, Request $request, CommentRepository $commentRepository, ExerciseRepository $exerciseRepository) 
+    {
+
+        if ($user == null) {
+
+            throw $this->createNotFoundException('utilisateur non trouvé.');
+        }
+
+        $jsonContent = $request->getContent();
+
+        $jsonDecoded = json_decode($jsonContent, true);
+
+        $exerciseID = $jsonDecoded['exercise'];
+
+        $exercise = $exerciseRepository->find($exerciseID);
+
+        $commentList = $commentRepository->findBy(['user' => $user, 'exercise' => $exercise], ['id' => 'DESC'], 5);
+
+        return $this->json($commentList, Response::HTTP_OK, [] , ['groups' => 'comment_get']);
+
+    }
 
 }
