@@ -8,10 +8,14 @@ use App\Entity\Exercise;
 use App\Repository\UserRepository;
 use App\Repository\ExerciseRepository;
 use App\Repository\ProgressRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CoachController extends AbstractController
 {
@@ -124,21 +128,36 @@ class CoachController extends AbstractController
      * 
      * @Route("/api/coach/user/{id}/exercise/postComment", name="addComment", methods={"POST"})
      */
-    public function postComment(User $user = null, Request $request)
+    public function postComment(User $user = null, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
     {
 
         $jsonContent = $request->getContent();
 
-        $newComment = new Comment;
+        if ($jsonContent == null || "") {
 
+            return $this->json("le coaching ne peut pas être vide", Response::HTTP_NO_CONTENT);
+        } 
 
+        
+        $comment = $serializer->deserialize($jsonContent, Comment::class, 'json');
+
+        $comment->setUser($user);
+
+        $error = $validator->validate($comment);
+
+        if (count($error) > 0) {
+
+            return $this->json('erreur mon amis', Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        }
+
+        $entityManager->persist($comment);
+
+        $entityManager->flush();
+
+        return $this->json('Commentaire ajouté avec succès', Response::HTTP_CREATED);
 
     }
-
-    //TODO coder la possibilité de rentrer dans un exercice de l'utilisateur afin de poster un commentaire
-
-
-
     
 }
 
