@@ -10,6 +10,7 @@ use App\Repository\ExerciseRepository;
 use App\Repository\ProgressRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Location;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -107,6 +108,8 @@ class CoachController extends AbstractController
 
             $exerciseID = $last['ID_exercise'];
 
+            $last['user_id'] = $user->getID();
+
             if (!in_array($exerciseID, $checkExerciseID)) {
 
                 $checkExerciseID[] = $exerciseID;
@@ -155,7 +158,7 @@ class CoachController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json('Commentaire ajouté avec succès', Response::HTTP_CREATED);
+        return $this->json('coaching a bien été envoyé' , Response::HTTP_CREATED);
 
     }
     
