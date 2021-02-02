@@ -19,13 +19,14 @@ class FitnessRoom
      * @ORM\Column(type="integer")
      * @Groups("infos")
      * @Groups("listUsersFitnesstRoom")
+     * @Groups("fitnessRoom_get")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Groups("infos")
-     * @Groups("listUsersFitnesstRoom")
+     * @Groups("fitnessRoom_get")
      */
     private $name;
 
