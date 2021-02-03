@@ -41,7 +41,7 @@ class UserController extends AbstractController
     /**
      * Méthode permettant de modifier les informations utilisateur
      * 
-     * @Route("/api/user/{id}/edit", name="user", methods={"PUT","PATCH"})
+     * @Route("/api/user/{id}/edit", name="user", methods={"PUT","PATCH","POST"})
      */
     public function edit(User $user = null, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder ): Response
     {
@@ -54,9 +54,9 @@ class UserController extends AbstractController
 
         $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user] );
 
-        $passwordHashed = $encoder->encodePassword($user, $user->getPassword());
+        // $passwordHashed = $encoder->encodePassword($user, $user->getPassword());
 
-        $user->setPassword($passwordHashed);
+        // $user->setPassword($passwordHashed);
 
         $error = $validator->validate($user);
 
