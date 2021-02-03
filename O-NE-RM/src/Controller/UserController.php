@@ -80,9 +80,7 @@ class UserController extends AbstractController
     {
         // On recupere le contenu de la requete
         $jsonContent = $request->getContent();
-
         
-        // $user = $serializer->deserialize($jsonContent, User::class, 'json', ["json_decode_options" => \JSON_OBJECT_AS_ARRAY] ); ==> a voir comment faire
 
         // ON recupere dans un tableau associatif tout le contenu JSON afin de recuperer le mot de passe de la salle transmis dans le formulaire vu qu'on ne pouvait pas le récuperer avec le deserializer
         $associativeArray = json_decode($jsonContent, true);
