@@ -43,11 +43,13 @@ security:
 
             logout:
                 path: app_logout
+                # where to redirect after logout
+                target: app_login
             guard:
                 authenticators:
                     - App\Security\AdminAuthenticator
-                # where to redirect after logout
-                # target: app_any_route
+                
+            
      
 
 
