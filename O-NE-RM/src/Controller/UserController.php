@@ -225,6 +225,7 @@ class UserController extends AbstractController
 
         $lastPerformancesAndGoals = $exerciseRepository->ExerciseWithUserProgressAndGoals($this->getUser());
         
+        $user = $this->getUser();
 
         $lastPerfAndGoalToSend = [];
         $checkExerciseID = [];
@@ -234,12 +235,16 @@ class UserController extends AbstractController
         foreach ($lastPerformancesAndGoals as $last) {
 
             $exerciseID = $last['ID_exercise'];
+            $last['user_id'] = $user->getId();
 
             if (!in_array($exerciseID, $checkExerciseID)) {
 
                 $checkExerciseID[] = $exerciseID;
 
+
                 $lastPerfAndGoalToSend[] = $last;
+
+                
             }
 
         }
