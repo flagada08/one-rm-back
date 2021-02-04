@@ -119,13 +119,15 @@ class UserController extends AbstractController
 
         }
 
-        // On recuperer le mot de passe du formulaire
+        //Désormais toute cette portion de code commentée est géree par le subscriber 
 
-        $passwordToHash = $user->getPassword();
+        //On recuperer le mot de passe du formulaire
 
-        $passwordEncoded = $encoder->encodePassword($user, $passwordToHash);
+        // $passwordToHash = $user->getPassword();
 
-        $user->setPassword($passwordEncoded);
+        // $passwordEncoded = $encoder->encodePassword($user, $passwordToHash);
+
+        // $user->setPassword($passwordEncoded);
 
 
         //  On valide l'entité désérialisée

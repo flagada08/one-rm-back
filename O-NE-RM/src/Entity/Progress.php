@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\OrderBy;
 use App\Repository\ProgressRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ProgressRepository::class)
@@ -46,6 +48,7 @@ class Progress
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="progress")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("progress_get")
+     * @Assert\NotNull
      */
     private $user;
 
@@ -54,6 +57,7 @@ class Progress
      * @ORM\JoinColumn(nullable=false)
      * @Groups("progress_get")
      * @Groups("progressUser")
+     * @Assert\NotNull
      * 
      */
     private $exercise;
@@ -122,4 +126,6 @@ class Progress
 
         return $this;
     }
+
+    
 }

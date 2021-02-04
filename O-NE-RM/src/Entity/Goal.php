@@ -5,6 +5,8 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\GoalRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=GoalRepository::class)
@@ -34,6 +36,7 @@ class Goal
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="goals")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull
      * 
      */
     private $user;
@@ -42,6 +45,7 @@ class Goal
      * @ORM\ManyToOne(targetEntity=Exercise::class, inversedBy="goals")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("goals_get")
+     * @Assert\NotNull
      */
     private $exercise;
 

@@ -30,10 +30,12 @@ class UserCrudController extends AbstractCrudController
             TextField::new('email'),
             NumberField::new('age'),
             AssociationField::new('fitnessRoom'),
-            ArrayField::new('roles')
+            ArrayField::new('roles'),
+            TextField::new('password')
 
-            // TextEditorField::new('description'),
         ];
     }
+
+    
     
 }
