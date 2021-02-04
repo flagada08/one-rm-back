@@ -16,14 +16,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ManagerController extends AbstractController
 {
     /**
+     * 
      * Méthode qui permet de gérer les demandes d'ouvertures de salle = création d'une salle en BDD.
      *
-     * @Route("api/back/manager/fitnessroom_add", name="roomrequest", methods={"POST","PUT","PATCH"})
+     * @Route("api/manager/newFitnessroom", name="roomrequest", methods={"POST","PUT","PATCH"})
+     * 
      */
     public function newFitnessRoom(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager): Response
     {
+
         $jsonContent = $request->getContent();
+
         $fitnessRoom = $serializer->deserialize($jsonContent, FitnessRoom::class, 'json');
+
         //  On valide l'entité désérialisée
         $errors = $validator->validate($fitnessRoom);
 
@@ -39,12 +44,13 @@ class ManagerController extends AbstractController
         $entityManager->flush($fitnessRoom);
         // REST nous dit : status 201 + Location: movies/{id}
         return $this->json(['message' => 'La Salle a été crée'], Response::HTTP_CREATED);
+
     }
 
     /**
      * Liste des membres par salle de sport
      *
-     * @Route("/api/back/manager", name="allusers")
+     * @Route("/api/manager", name="allusers")
      *
      */
     public function userList(UserRepository $userRepository): Response
@@ -62,7 +68,7 @@ class ManagerController extends AbstractController
     /**
      * Méthode permettant de modifier les informations d'un membre
      *
-     * @Route("/api/back/manager/user/{id}/edit", name="user_edit", methods={"PATCH"})
+     * @Route("/api/manager/user/{id}/edit", name="user_edit", methods={"PATCH"})
      */
     public function edit(User $user = null, EntityManagerInterface $entityManager, SerializerInterface $serializer, Request $request, ValidatorInterface $validator): Response
     {
@@ -94,7 +100,7 @@ class ManagerController extends AbstractController
     /**
      * Suppression d'un membre
      * 
-     * @Route("api/back/manager/user/{id}/delete", name="delete_user", methods = {"DELETE"})
+     * @Route("api/manager/user/{id}/delete", name="delete_user", methods = {"DELETE"})
      *
      */
     public function userDelete(User $user = null, EntityManagerInterface $entityManager): Response

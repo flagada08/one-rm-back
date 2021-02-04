@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Goal;
+use App\Entity\User;
 use App\Entity\Comment;
 use App\Entity\Exercise;
 use App\Entity\Progress;
@@ -45,12 +46,16 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::section('Entités');
+        yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
 
-        yield MenuItem::linktoDashboard('User', 'fa fa-list');
+        yield MenuItem::linkToCrud('User', 'fa fa-list', User::class);
         yield MenuItem::linkToCrud('Exercise', 'fas fa-list', Exercise::class);
         yield MenuItem::linkToCrud('FitnessRoom', 'fas fa-list', FitnessRoom::class);
         yield MenuItem::linkToCrud('Progress', 'fas fa-list', Progress::class);
         yield MenuItem::linkToCrud('Goal', 'fas fa-list', Goal::class);
         yield MenuItem::linkToCrud('Comment', 'fas fa-list', Comment::class);
+
+        
     }
+    
 }

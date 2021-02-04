@@ -7,7 +7,12 @@ use Doctrine\ORM\Mapping\OrderBy;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -30,7 +35,9 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups("infos")
      * @Groups("listUsersFitnesstRoom")
-     * 
+     * @Assert\Email
+     * @Assert\NotNull
+     * @Assert\NotBlank
      */
     private $email;
 
@@ -38,7 +45,7 @@ class User implements UserInterface
      * @ORM\Column(type="json")
      * @Groups("infos")
      * @Groups("listUsersFitnesstRoom")
-     * 
+     * @Assert\NotNull
      */
     private $roles = ['ROLE_USER'];
 
@@ -46,7 +53,7 @@ class User implements UserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Groups("infos")
-     * 
+     * @Assert\Length(min=6)
      */
     private $password;
 
@@ -54,6 +61,7 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=10)
      * @Groups("infos")
      * @Groups("listUsersFitnesstRoom")
+     * @Assert\NotNull
      */
     private $gender;
 
@@ -62,6 +70,7 @@ class User implements UserInterface
      * @Groups("infos")
      * @Groups("progress_get")
      * @Groups("listUsersFitnesstRoom")
+     * @Assert\NotNull
      */
     private $firstname;
 
@@ -70,6 +79,7 @@ class User implements UserInterface
      * @Groups("infos")
      * @Groups("progress_get")
      * @Groups("listUsersFitnesstRoom")
+     * @Assert\NotNull
      */
     private $lastname;
 
@@ -77,6 +87,7 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @Groups("infos")
      * @Groups("listUsersFitnesstRoom")
+     * @Assert\NotNull
      */
     private $age;
 
@@ -341,6 +352,10 @@ class User implements UserInterface
         return $this;
     }
 
-    
+    public function __toString()
+    {
+        return $this->email;
+    }
+
 
 }

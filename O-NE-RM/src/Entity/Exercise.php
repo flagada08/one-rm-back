@@ -8,6 +8,8 @@ use App\Repository\ExerciseRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ExerciseRepository::class)
@@ -23,6 +25,7 @@ class Exercise
      * @Groups("goals_get")
      * @Groups("progressUser")
      * @Groups("comment_get")
+     * 
      */
     private $id;
 
@@ -32,6 +35,7 @@ class Exercise
      * @Groups("progress_get")
      * @Groups("goals_get")
      * @Groups("progressUser")
+     * @Assert\NotBlank
      */
     private $name;
 
@@ -41,6 +45,7 @@ class Exercise
      * @Groups("progress_get")
      * @Groups("goals_get")
      * @Groups("progressUser")
+     * @Assert\NotBlank
      */
     private $difficulty;
 
@@ -59,6 +64,7 @@ class Exercise
      * @Groups("progress_get")
      * @Groups("goals_get")
      * @Groups("progressUser")
+     * @Assert\NotBlank
      */
     private $advice;
 
@@ -227,4 +233,10 @@ class Exercise
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
 }

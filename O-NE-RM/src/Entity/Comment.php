@@ -5,6 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommentRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\NotNull;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
@@ -22,6 +25,7 @@ class Comment
     /**
      * @ORM\Column(type="text")
      * @Groups("comment_get")
+     * @Assert\NotBlank
      */
     private $content;
 
@@ -29,6 +33,7 @@ class Comment
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("comment_get")
+     * @Assert\NotNull
      */
     private $user;
 
@@ -36,6 +41,7 @@ class Comment
      * @ORM\ManyToOne(targetEntity=Exercise::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      * @Groups("comment_get")
+     * @Assert\NotNull
      */
     private $exercise;
 

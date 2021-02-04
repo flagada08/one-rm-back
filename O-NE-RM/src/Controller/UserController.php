@@ -10,6 +10,7 @@ use App\Entity\Progress;
 use App\Repository\CommentRepository;
 use App\Repository\ExerciseRepository;
 use App\Repository\FitnessRoomRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -119,13 +120,15 @@ class UserController extends AbstractController
 
         }
 
-        // On recuperer le mot de passe du formulaire
+        //Désormais toute cette portion de code commentée est géree par le subscriber 
 
-        $passwordToHash = $user->getPassword();
+        //On recuperer le mot de passe du formulaire
 
-        $passwordEncoded = $encoder->encodePassword($user, $passwordToHash);
+        // $passwordToHash = $user->getPassword();
 
-        $user->setPassword($passwordEncoded);
+        // $passwordEncoded = $encoder->encodePassword($user, $passwordToHash);
+
+        // $user->setPassword($passwordEncoded);
 
 
         //  On valide l'entité désérialisée
@@ -261,9 +264,9 @@ class UserController extends AbstractController
      * 
      * @Route("/api/user/workout/{id}/newPerf", name="newPerformance", methods={"POST"})
      */
-    public function newPerf(Exercise $exercise = null, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
+    public function newPerf(Exercise $exercise = null, Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator, UserRepository $userRepository): Response
     {
-
+        
         if ($exercise == null) {
 
             throw $this->createNotFoundException('exercice non trouvé.');
@@ -271,10 +274,18 @@ class UserController extends AbstractController
 
         $jsonContent = $request->getContent();
 
-        $newPerformance = $serializer->deserialize($jsonContent, Progress::class, 'json');
+        $newPerformance = $serializer->deserialize($jsonContent, Progress::class, 'json');        
+        
+        $associativeArray = json_decode($jsonContent, true);
+        $user = $userRepository->find($associativeArray['user_id']);
 
+        $newPerformance->setUser($user);
         $newPerformance->setExercise($exercise);
 
+        if ($newPerformance->getUser() !== $this->getUser()) {
+            
+            throw $this->createAccessDeniedException('vous ne passerez pas');
+        }
 
          //  On valide l'entité désérialisée
          $errors = $validator->validate($newPerformance);
@@ -349,16 +360,32 @@ class UserController extends AbstractController
     /**
      * Méthode qui permet d'ajouter un objectif en BDD
      * 
-     * @Route("/api/user/{id}/workout/goal", name="goal", methods={"POST","PUT","PATCH"})
+     * @Route("/api/user/workout/{id}/newGoal", name="goal", methods={"POST","PUT","PATCH"})
      */
-    public function newGoal(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager): Response
+    public function newGoal(Exercise $exercise, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         
+        if ($exercise == null) {
+
+            throw $this->createNotFoundException('exercice non trouvé.');
+        }
+
         $jsonContent = $request->getContent();
         
-        $goal = $serializer->deserialize($jsonContent, Goal::class, 'json' );
+        $newGoal = $serializer->deserialize($jsonContent, Goal::class, 'json' );
+
+        $associativeArray = json_decode($jsonContent, true);
+        $user = $userRepository->find($associativeArray['user_id']);
+
+        $newGoal->setUser($user);
+        $newGoal->setExercise($exercise);
+
+        if ($newGoal->getUser() !== $this->getUser()) {
+            
+            throw $this->createAccessDeniedException('vous ne passerez pas');
+        }
        
-        $errors = $validator->validate($goal);
+        $errors = $validator->validate($newGoal);
 
         // Si nombre d'erreur > 0 alors on renvoie une erreur
         if (count($errors) > 0) {
@@ -366,7 +393,7 @@ class UserController extends AbstractController
             return $this->json('ça ne fonctionne pas', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $entityManager->persist($goal);
+        $entityManager->persist($newGoal);
 
         $entityManager->flush();
 
