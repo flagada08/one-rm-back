@@ -64,9 +64,12 @@ security:
     access_control:
 
         - { path: ^/admin,  roles: ROLE_ADMIN }
-        - { path: ^/api/back/manager/fitnessroom,  roles: ROLE_MANAGER }
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/user,  roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/user, roles: ROLE_USER }
+        - { path: ^/api/coach, roles: ROLE_COACH }
+        - { path: ^/api/back/manager, roles:  ROLE_MANAGER }
+        - { path: ^/api/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
 
     role_hierarchy:
         # Ici, ROLE_ADMIN hérite du rôle ROLE_MANAGER
