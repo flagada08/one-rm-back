@@ -46,24 +46,39 @@ class UserController extends AbstractController
      */
     public function edit(User $user = null, EntityManagerInterface $em, SerializerInterface $serializer, Request $request, ValidatorInterface $validator, UserPasswordEncoderInterface $encoder ): Response
     {
+        //ON vérifie si l'utilisateur existe sinon on renvoie une 404
         if ($user == null) {
 
             throw $this->createNotFoundException('utilisateur non trouvé');
-        }
 
+        }
+        // On récupère le contenu envoyé par le front
         $jsonContent = $request->getContent();
 
-        $object = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user] );
+        //on stocke le mot de passe actuel de l'utilisateur
+        $oldPassword = $user->getPassword();
 
-        // $passwordHashed = $encoder->encodePassword($user, $user->getPassword());
+        //on deserialise les infos dans l'objet user
+        $userUpdated = $serializer->deserialize($jsonContent, User::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $user] );
 
-        // $user->setPassword($passwordHashed);
-
+        //on recupere le mot de passe de l'utilisateur post deserialisation
+        $newPassword = $userUpdated->getPassword();
+       
         $error = $validator->validate($user);
 
+        // on check les contraintes de validatation si ok en entre pas sinon en renvoie une 422
         if (count($error) > 0) {
 
             return $this->json('erreur mon amis', Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        }
+
+        //Ici on vérifie si l'ancien mot de passe (crypté) est le meme que le mot de passe envoyé (donc non modifié) si ce n'est pas le cas on hash le nouveau password envoyé
+        if ($oldPassword !== $newPassword) {
+
+            $passwordHashed = $encoder->encodePassword($user, $newPassword);
+
+            $user->setPassword($passwordHashed);
 
         }
 
@@ -282,6 +297,7 @@ class UserController extends AbstractController
         $newPerformance->setUser($user);
         $newPerformance->setExercise($exercise);
 
+        //Ici on bloque l'envoi de performance par un autre utilisateur que celui qui est concerné (exemple le coach envoi une performance pour un utilisateur)
         if ($newPerformance->getUser() !== $this->getUser()) {
             
             throw $this->createAccessDeniedException('vous ne passerez pas');
@@ -380,6 +396,7 @@ class UserController extends AbstractController
         $newGoal->setUser($user);
         $newGoal->setExercise($exercise);
 
+        //Ici on bloque l'envoi d'objectif par un autre utilisateur que celui qui est concerné (exemple le coach envoi un objectif pour un utilisateur)
         if ($newGoal->getUser() !== $this->getUser()) {
             
             throw $this->createAccessDeniedException('vous ne passerez pas');

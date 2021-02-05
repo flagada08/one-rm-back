@@ -25,7 +25,6 @@ class UserPasswordSubscriber implements EventSubscriber
     {
         return [
             Events::prePersist,
-            Events::preUpdate
         ];
     }
 
@@ -37,11 +36,6 @@ class UserPasswordSubscriber implements EventSubscriber
         $this->setPassword('persist', $args);
     }
 
-
-    public function preUpdate(LifecycleEventArgs $args): void
-    {
-        $this->setPassword('update', $args);
-    }
 
     private function setPassword(string $action, LifecycleEventArgs $args): void
     {
