@@ -47,7 +47,7 @@ class User implements UserInterface
      * @Groups("listUsersFitnesstRoom")
      * @Assert\NotNull
      */
-    private $roles = 'ROLE_USER';
+    private $roles = [];
 
     /**
      * @var string The hashed password
@@ -151,13 +151,15 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getRoles()
+    public function getRoles(): array
     {
 
         $roles = $this->roles;
         // // guarantee every user at least has ROLE_USER
         // $roles[] = 'ROLE_USER';
     
+
+        return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
