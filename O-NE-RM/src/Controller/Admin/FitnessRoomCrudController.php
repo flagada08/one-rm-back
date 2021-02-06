@@ -19,7 +19,7 @@ class FitnessRoomCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id'),
-            TextField::new('password'),
+            TextField::new('name'),
             TextField::new('password'),
         ];
     }
