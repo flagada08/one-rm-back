@@ -35,9 +35,13 @@ class EasyAdminUpdateUserPasswordSubscriber implements EventSubscriberInterface
         
         if($event->getAdminContext()->getEntity()->getInstance() !== null){
 
-            $oldPassword = $event->getAdminContext()->getEntity()->getInstance()->getPassword();
-    
-            return $this->oldPassword = $oldPassword;
+            if($event->getAdminContext()->getEntity()->getInstance()instanceof User) {
+
+                $oldPassword = $event->getAdminContext()->getEntity()->getInstance()->getPassword();
+        
+                return $this->oldPassword = $oldPassword;
+
+            }
 
         }
 
