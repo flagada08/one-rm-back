@@ -67,7 +67,7 @@ security:
         - { path: ^/api/user, roles: ROLE_USER }
         - { path: ^/api/coach, roles: ROLE_COACH }
         - { path: ^/api/back/manager, roles:  ROLE_MANAGER }
-        - { path: ^/api/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 

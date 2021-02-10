@@ -53,7 +53,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         // on crée des progres aléatoires
 
 
-        for ($i = 0; $i <= 130; $i++){
+        for ($i = 0; $i <= 10; $i++){
 
             $progress = new Progress();
             
@@ -62,7 +62,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             $progress->setRepetition(mt_rand(1,30));
             $progress->setWeight(mt_rand(1,150));
             $progress->setUser($this->userRepository->find(mt_rand(1,9)));
-            $progress->setExercise($this->exerciseRepository->find(mt_rand(1,16)));
+            $progress->setExercise($this->exerciseRepository->find(mt_rand(1,3)));
 
 
             $manager->persist($progress);
@@ -71,7 +71,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
         // on crée des comment aléatoires
 
 
-        for ($i = 0; $i <= 130; $i++){
+        for ($i = 0; $i <= 10; $i++){
 
             $comment = new Comment();
             
@@ -87,7 +87,7 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
             // on crée des objectifs (goal) aléatoires
 
 
-        for ($i = 0; $i <= 130; $i++){
+        for ($i = 0; $i <= 10; $i++){
 
             $goal = new Goal();
             

@@ -40,7 +40,7 @@ class FitnessRoomFixtures extends Fixture
 
         // On créé des salles de sport fictives 
 
-        for ($i = 0; $i <= 15; $i++){
+        for ($i = 1; $i <= 3; $i++){
 
             $fitnessRoom = new FitnessRoom();
 
