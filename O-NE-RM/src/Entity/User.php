@@ -38,6 +38,7 @@ class User implements UserInterface
      * @Assert\Email
      * @Assert\NotNull
      * @Assert\NotBlank
+     * @Assert\Unique
      */
     private $email;
 

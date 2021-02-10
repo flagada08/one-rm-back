@@ -69,9 +69,10 @@ class UserController extends AbstractController
         // on check les contraintes de validatation si ok en entre pas sinon en renvoie une 422
         if (count($error) > 0) {
 
-            return $this->json('erreur mon amis', Response::HTTP_UNPROCESSABLE_ENTITY);
+            return $this->json('formulaire incorrect', Response::HTTP_UNPROCESSABLE_ENTITY);
 
         }
+
 
         //Ici on vérifie si l'ancien mot de passe (crypté) est le meme que le mot de passe envoyé (donc non modifié) si ce n'est pas le cas on hash le nouveau password envoyé
         if ($oldPassword !== $newPassword) {
