@@ -18,9 +18,9 @@ class FitnessRoomCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('password'),
-            TextField::new('password'),
+            IdField::new('id')->hideOnForm(),
+            TextField::new('name'),
+
         ];
     }
     

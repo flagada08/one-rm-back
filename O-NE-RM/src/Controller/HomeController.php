@@ -3,25 +3,23 @@
 namespace App\Controller;
 
 use App\Entity\Exercise;
+use App\Repository\UserRepository;
 use App\Repository\ExerciseRepository;
 use App\Repository\FitnessRoomRepository;
-use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
     /**
      * @Route("/", name="home")
      */
-    public function Home(ExerciseRepository $exercise): Response
+    public function Home(): Response
     {
-
-        $list = $exercise->findAll();
-        
-        return $this->json($list, Response::HTTP_OK, [], ['groups' => 'workout_get']);
+        return $this->redirectToRoute('app_login');
     }
 
     /**

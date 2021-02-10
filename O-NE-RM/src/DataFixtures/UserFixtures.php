@@ -53,12 +53,12 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
             $user->setFirstName($provider->username($i));
             $user->setLastname($provider->username($i));
-            $user->setGender(array_rand($gender));
+            $user->setGender($gender[mt_rand(0,1)]);
             $user->setAge(mt_rand(15, 99));
             $user->setEmail($provider->username($i). '@' . $provider->username($i) . '.com');
             $user->setPassword($this->passwordEncoder->encodePassword($user, $provider->username($i)));
             $user->setRoles(['ROLE_USER']);
-            $user->setFitnessRoom($this->fitnessRoomRepository->find(mt_rand(1,16)));
+            $user->setFitnessRoom($this->fitnessRoomRepository->find(mt_rand(1,3)));
 
 
             $manager->persist($user);
